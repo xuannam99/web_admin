@@ -10,7 +10,7 @@ import UploadFileView from './UploadFileView';
 import "antd/dist/antd.css";
 import { Table, Tag, Space, Button, Modal } from "antd";
 // api up data
-import {pushFile} from '../../controllers/PushData';
+import { pushFile } from '../../controllers/PushData';
 const styles = {
   typo: {
     paddingLeft: "25%",
@@ -55,6 +55,7 @@ let datasetFile = [{
   "abc": "sdef"
 }]
 
+// columns
 const columns = [
   {
     title: "Name",
@@ -146,6 +147,8 @@ let content = [
 export default function UploadData() {
   const classes = useStyles();
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  // name and data post database
   const dataUpload = {
     part1: [],
     part2: [],
@@ -161,6 +164,7 @@ export default function UploadData() {
     test: [],
   }
 
+  // convert excel to json
   const UploadFile = (e) => {
     // console.log(e);
     return new Promise((resolve, reject) => {
@@ -182,6 +186,7 @@ export default function UploadData() {
       }
     });
   }
+  // set file 
   const uploadFile = async (e, name) => {
     switch (name) {
       case 'part1': {
@@ -268,20 +273,21 @@ export default function UploadData() {
       }
     }
   }
-  const pushData=()=>{
-    let res = pushFile(dataUpload.part1,'part1');
-       console.log(res);
+  // push data firebase
+  const pushData = async () => {
     // for (const property in dataUpload) {
-    //   let res = pushFile(dataUpload[property],property);
-    //   console.log(res);
+    //   let res = await pushFile(dataUpload[property], property);
     // }
+    await pushFile(dataUpload.test, 'test');
+    setLoading(false);
+    setIsModalVisible(false);
   }
   const showModal = () => {
     setIsModalVisible(true);
   };
   const handleOk = () => {
+    setLoading(true);
     pushData();
-    setIsModalVisible(false);
   };
   const handleCancel = () => {
     setIsModalVisible(false);
@@ -301,7 +307,20 @@ export default function UploadData() {
         </div>
       </CardHeader>
       <CardBody>
-        <Modal title="Add data" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+        <Modal
+          visible={isModalVisible}
+          title="Add data"
+          onOk={handleOk}
+          onCancel={handleCancel}
+          footer={[
+            <Button key="back" onClick={handleCancel}>
+              Cancel
+            </Button>,
+              <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
+              Up load
+            </Button>,
+          ]}
+        >
           {
             content.map((element) =>
               <UploadFileView

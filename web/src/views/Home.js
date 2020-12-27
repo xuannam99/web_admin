@@ -6,7 +6,8 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   UserOutlined,
-  VideoCameraOutlined,
+  TeamOutlined ,
+  UsergroupAddOutlined ,
   UploadOutlined,
 } from '@ant-design/icons';
 // auth
@@ -20,9 +21,8 @@ import ListUser from './Components/ListUser';
 // view list user admin
 import ListUserAdmin from './Components/ListUserAdmin';
 const { Header, Sider, Content } = Layout; // views
-
+let heightScreen = window.innerHeight;
 const Home = () => {
-  var heightScreen = window.innerHeight;
   const [collapsed, setCollapsed] = useState(false);
   const [index, setIndex] = useState(1);
   const [data, setData] = useState([]);
@@ -46,10 +46,9 @@ const Home = () => {
         console.log(err.response);
       });
   };
-  // useEffect(() => {
-  //   getPosts();
-  // }, [load]);
-
+  useEffect(() => {
+    getPosts();
+  }, [load]);
   return (
     <div style={{ flex: 1 }}>
       <Layout>
@@ -58,12 +57,12 @@ const Home = () => {
             <h4 style={{ color: 'white' }}>TOEIC SEB</h4>
           </div>
           <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
-            <Menu.Item key="1" icon={<UserOutlined />} onClick={() => {
+            <Menu.Item key="1" icon={<TeamOutlined/>} onClick={() => {
               setIndex(1);
             }} >
-              User Admin
+              Admin
             </Menu.Item>
-            <Menu.Item key="2" icon={<UserOutlined />} onClick={() => {
+            <Menu.Item key="2" icon={<UsergroupAddOutlined/>} onClick={() => {
               setIndex(2);
             }}>
               User
@@ -76,11 +75,14 @@ const Home = () => {
           </Menu>
         </Sider>
         <Layout className="site-layout">
-          <Header className="site-layout-background" style={{ padding: 0, }}>
+          <Header className="site-layout-background" style={{ padding: 0, display:'flex'}}>
             {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
               className: 'trigger',
               onClick: toggle,
             })}
+            <div style={{flex:1,display:'flex',justifyContent:'flex-end',alignItems:'center',paddingRight:30}}>
+              <UserOutlined style={{fontSize:25}}/>
+            </div>
           </Header>
           <div style={{ height: heightScreen - 100, padding: 10 }}>
             {

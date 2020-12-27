@@ -10,7 +10,7 @@ export const pushFile = ( data, name) => {
                 'Access-Control-Allow-Origin': "*",
                 mode: 'no-cors'
             },
-            body:JSON.stringify(data),
+            body:data,
         }).then((data) => {
             resolve(data.json);
         })

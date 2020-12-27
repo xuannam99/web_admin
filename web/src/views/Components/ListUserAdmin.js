@@ -126,12 +126,12 @@ export default function UploadData() {
       <CardHeader color="primary">
         <div style={{ display: 'flex' }}>
           <div style={{ display: 'flex', flex: 1 }}>
-            <h4 className={classes.cardTitleWhite}>Up load data</h4>
+            <h4 className={classes.cardTitleWhite}>List admin</h4>
           </div>
           <div style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end', display: 'flex' }}>
             <Button onClick={
               showModal
-            }>Add user</Button>
+            }>Add admin</Button>
           </div>
         </div>
       </CardHeader>
