@@ -1,5 +1,4 @@
 import React from "react";
-
 const UploadFile = (props) => {
     const { uploadFile, name, title } = props;
     return (

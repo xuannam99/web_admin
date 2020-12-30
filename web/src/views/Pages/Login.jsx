@@ -5,7 +5,7 @@ import { authenticate, isAuth } from '../../controllers/localStorage';
 import { Link, Redirect } from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
-
+// login
 const Login = ({ history }) => {
   const [formData, setFormData] = useState({
     email: '',
@@ -24,6 +24,7 @@ const Login = ({ history }) => {
       })
       .then((res) => {
         console.log(res.data);
+        // kiem tra tai khoan
         informParent(res);
       })
       .catch((error) => {
@@ -59,6 +60,7 @@ const Login = ({ history }) => {
     sendFacebookToken(response.accessToken);
   };
 
+  // check login
   const handleSubmit = (e) => {
     console.log(process.env.REACT_APP_API_URL);
     e.preventDefault();
@@ -193,24 +195,7 @@ const Login = ({ history }) => {
                       </div>
                     </button>
                   )}
-                />
-                <button
-                  style={{
-                    width: 50,
-                    height: 50,
-                    backgroundColor: '#EBF4FF',
-                    borderRadius: 25,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    display: 'flex',
-                    marginLeft: 20,
-                  }}
-                  onClick={() => {
-                    history.push('/register');
-                  }}
-                >
-                  <i className="fas fa-user-plus fa-1x " />
-                </button>
+                />              
               </div>
             </div>
           </div>

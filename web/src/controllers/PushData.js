@@ -1,4 +1,3 @@
-import React from "react";
 
 export const pushFile = ( data, name) => {
     return new Promise((resolve, reject) => {
@@ -12,7 +11,7 @@ export const pushFile = ( data, name) => {
             },
             body:data,
         }).then((data) => {
-            resolve(data.json);
+            resolve(data.json());
         })
     });
 }

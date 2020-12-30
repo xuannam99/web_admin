@@ -1,9 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
-import Home from "./views/Home.js";
+import Home from "./views/Home.jsx";
 import Login from "./views/Pages/Login";
-import Register from "./views/Pages/Register.jsx";
 import Activate from "./views/Pages/Activate";
 import ForgetPassword from "./views/Pages/ForgetPassword";
 import ResetPassword from "./views/Pages/ResetPassword.jsx";
@@ -15,11 +14,6 @@ ReactDOM.render(
     <BrowserRouter>
       <Switch>
         <Route path="/login" exact render={(props) => <Login {...props} />} />
-        <Route
-          path="/register"
-          exact
-          render={(props) => <Register {...props} />}
-        />
         <Route
           path="/users/password/forget"
           exact

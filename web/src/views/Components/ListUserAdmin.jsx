@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
-import Card from "./Card/Card.js";
-import CardHeader from "./Card/CardHeader.js";
-import CardBody from "./Card/CardBody.js";
+import Card from "./Card/Card.jsx";
+import CardHeader from "./Card/CardHeader.jsx";
+import CardBody from "./Card/CardBody.jsx";
 import "antd/dist/antd.css";
 import { Table, Tag, Space, Button, Modal } from "antd";
 
@@ -109,6 +109,26 @@ export default function UploadData() {
         setData(array);
       });
   }
+  const signUp = async()=>{
+    return new Promise((resolve, reject) => {
+      fetch(`https://toeic-seb.herokuapp.com/admin/register`, {
+          method: 'POST',
+          headers: {
+              Accept: 'application/json, text/plain, */*',
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': "*",
+              mode: 'no-cors'
+          },
+          body:JSON.stringify({
+            username: name,
+            email: email,
+            password: password1
+          }),
+      }).then((data) => {
+          resolve(data.json);
+      })
+  });
+  }
   useEffect(() => {
     getData();
   }, [])
@@ -116,7 +136,13 @@ export default function UploadData() {
     setIsModalVisible(true);
   };
   const handleOk = () => {
-    setIsModalVisible(false);
+    if(password2 ===password2){
+      signUp();
+      setIsModalVisible(false);
+    }
+    else{
+      
+    }
   };
   const handleCancel = () => {
     setIsModalVisible(false);

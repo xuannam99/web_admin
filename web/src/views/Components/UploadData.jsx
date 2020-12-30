@@ -2,13 +2,18 @@ import React, { useState } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
-import Card from "./Card/Card.js";
-import CardHeader from "./Card/CardHeader.js";
-import CardBody from "./Card/CardBody.js";
+import Card from "./Card/Card.jsx";
+import CardHeader from "./Card/CardHeader.jsx";
+import CardBody from "./Card/CardBody.jsx";
 import XLSX from 'xlsx';
-import UploadFileView from './UploadFileView';
+import UploadFileView from './UploadFileView/index.jsx';
 import "antd/dist/antd.css";
-import { Table, Tag, Space, Button, Modal } from "antd";
+import { Table, Tag, Space, Button, Modal,notification } from "antd";
+import moment from "moment";
+// import icon
+import {
+  SmileOutlined, FrownOutlined
+} from '@ant-design/icons';
 // api up data
 import { pushFile } from '../../controllers/PushData';
 const styles = {
@@ -144,7 +149,8 @@ let content = [
   },
 
 ]
-export default function UploadData() {
+export default function UploadData(props) {
+  const { setDataNotification } = props;
   const classes = useStyles();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -273,23 +279,66 @@ export default function UploadData() {
       }
     }
   }
+  // check data upload
+  const checkDataUpload = () => {
+    for (const property in dataUpload) {
+      if (property.length === 0 ) {
+        return false;
+      }
+    }
+    return true;
+  }
   // push data firebase
   const pushData = async () => {
-    // for (const property in dataUpload) {
-    //   let res = await pushFile(dataUpload[property], property);
-    // }
-    await pushFile(dataUpload.test, 'test');
-    setLoading(false);
+    let res = [];
+    for (const property in dataUpload) {
+      await pushFile(dataUpload[property], property)
+        .then(data => {
+          if (data.status) {
+            res.push({
+              content: `Add data ${property} success`,
+              date: moment().format('YYYY/MM/DD'),
+              status: data.status
+            })
+          }
+          else {
+            res.push({
+              content: `Add data ${property} fail`,
+              date: moment().format('YYYY/MM/DD'),
+              status: data.status
+            })
+          }
+        })
+    }
+    // set data notification
+    setDataNotification(res);
+    setLoading(false); // set loadding
     setIsModalVisible(false);
+   
   }
+  const openNotification = () => {
+    const args = {
+      message: 'Thông báo!!',
+      description:
+        'Vui lòng thêm đầy đủ các phần!!!',
+      duration: 0,
+    };
+    notification.open(args);
+  };
   const showModal = () => {
     setIsModalVisible(true);
   };
   const handleOk = () => {
-    setLoading(true);
-    pushData();
+    if (checkDataUpload === true) {
+      setLoading(true);
+      pushData();
+    }
+    else {
+      openNotification();
+    }
   };
   const handleCancel = () => {
+    setLoading(false);
     setIsModalVisible(false);
   };
   return (
@@ -316,7 +365,7 @@ export default function UploadData() {
             <Button key="back" onClick={handleCancel}>
               Cancel
             </Button>,
-              <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
+            <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
               Up load
             </Button>,
           ]}
