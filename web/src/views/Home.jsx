@@ -10,7 +10,8 @@ import {
   UsergroupAddOutlined,
   UploadOutlined,
   BellOutlined,
-  NotificationOutlined 
+  NotificationOutlined,
+  ProfileOutlined 
 } from '@ant-design/icons';
 // auth
 import { ToastContainer } from 'react-toastify';
@@ -25,13 +26,19 @@ import ListUserAdmin from './Components/ListUserAdmin';
 // import components notfication
 import Noti from './Components/Noti';
 import Notification from './Components/SendNoti';
-
+import Profile from './Components/Profile'
 const { Header, Sider, Content } = Layout; // views
 let heightScreen = window.innerHeight;
 const Home = ({ history }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [index, setIndex] = useState(1);
   const [data, setData] = useState([]);
+  const [dataAdmin, setDataAdmin] = useState({
+    username:'xuannam',
+    email: 'teo12011999@gmail.com',
+    phone: '1234343434',
+    prefix: "86",
+  });
   const [dataNoti, setDataNoti] = useState([]);
   const [amountNoti, setAmountNoti] = useState(0);
   const [load, setLoad] = useState(false);
@@ -132,6 +139,11 @@ const Home = ({ history }) => {
             }}>
               Send notification
             </Menu.Item>
+            <Menu.Item key="5" icon={<ProfileOutlined />} onClick={() => {
+              setIndex(5);
+            }}>
+              Profile
+            </Menu.Item>
           </Menu>
         </Sider>
         <Layout className="site-layout">
@@ -172,12 +184,13 @@ const Home = ({ history }) => {
               </div>
             </div>
           </Header>
-          <div style={{ height: heightScreen - 100, padding: 10 }}>
+          <div style={{ height: heightScreen, padding: 10 }}>
             {
               index === 1 ? <ListUserAdmin />
                 : index === 2 ? <ListUser />
                 : index === 3? <UpData setDataNotification={(setDataNotification)}/>
-                :<Notification></Notification>
+                :index === 4?<Notification></Notification>
+                :<Profile dataAdmin={dataAdmin}/>
             }
           </div>
         </Layout>

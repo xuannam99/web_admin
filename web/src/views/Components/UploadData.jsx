@@ -329,7 +329,7 @@ export default function UploadData(props) {
     setIsModalVisible(true);
   };
   const handleOk = () => {
-    if (checkDataUpload === true) {
+    if (checkDataUpload) {
       setLoading(true);
       pushData();
     }

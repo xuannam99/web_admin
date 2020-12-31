@@ -6,8 +6,9 @@ import Card from "./Card/Card.jsx";
 import CardHeader from "./Card/CardHeader.jsx";
 import CardBody from "./Card/CardBody.jsx";
 import "antd/dist/antd.css";
-import { Table, Tag, Space, Button, Modal } from "antd";
+import { Table, Tag, Space, Button, Modal,notification } from "antd";
 
+import AddAdminForm from './AddAdminForm';
 const styles = {
   typo: {
     paddingLeft: "25%",
@@ -80,19 +81,7 @@ export default function UploadData() {
   const [reload, setReload] = React.useState(true) // reload
   const [data, setData] = React.useState([]); // data
   // input add user admin
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password1: '',
-    password2: '',
-    textChange: 'Sign Up',
-  });
-
-  const { name, email, password1, password2, textChange } = formData;
-
-  const handleChange = (text) => (e) => {
-    setFormData({ ...formData, [text]: e.target.value });
-  };
+ 
   const getData = async () => {
     return await fetch(`https://toeic-seb.herokuapp.com/admin/`)
       .then(response => response.json())
@@ -109,44 +98,58 @@ export default function UploadData() {
         setData(array);
       });
   }
-  const signUp = async()=>{
-    return new Promise((resolve, reject) => {
-      fetch(`https://toeic-seb.herokuapp.com/admin/register`, {
-          method: 'POST',
-          headers: {
-              Accept: 'application/json, text/plain, */*',
-              'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': "*",
-              mode: 'no-cors'
-          },
-          body:JSON.stringify({
-            username: name,
-            email: email,
-            password: password1
-          }),
-      }).then((data) => {
-          resolve(data.json);
-      })
-  });
-  }
+  
   useEffect(() => {
     getData();
   }, [])
   const showModal = () => {
     setIsModalVisible(true);
   };
-  const handleOk = () => {
-    if(password2 ===password2){
-      signUp();
-      setIsModalVisible(false);
-    }
-    else{
-      
-    }
+  const handleOk = (values) => {    
+    signUp(values)
+        .then(data => {
+            if (data.status) {
+                openNotification('Thêm admin thành công.');
+                setReload(!reload);
+            }
+            else {
+                openNotification('Thêm admin thất bại!!');
+            }
+        });
+    setIsModalVisible(false);
   };
+  const openNotification = (content) => {
+    const args = {
+        message: 'Thông báo!!',
+        description: content,
+        duration: 0,
+    };
+    notification.open(args);
+};
   const handleCancel = () => {
     setIsModalVisible(false);
   };
+  const signUp = async (values) => {
+    return new Promise((resolve, reject) => {
+        fetch(`https://toeic-seb.herokuapp.com/admin/register`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': "*",
+                mode: 'no-cors'
+            },
+            body: JSON.stringify({
+                username: values.username,
+                email: values.email,
+                password: values.confirm,
+                phone: values.phone
+            }),
+        }).then((data) => {
+            resolve(data.json);
+        })
+    });
+}
   return (
     <Card>
       <CardHeader color="primary">
@@ -162,37 +165,8 @@ export default function UploadData() {
         </div>
       </CardHeader>
       <CardBody>
-        <Modal title="Add data" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-          <div className="mx-auto max-w-xs relative ">
-            <input
-              className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
-              type="text"
-              placeholder="Name"
-              onChange={handleChange('name')}
-              value={name}
-            />
-            <input
-              className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
-              type="email"
-              placeholder="Email"
-              onChange={handleChange('email')}
-              value={email}
-            />
-            <input
-              className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
-              type="password"
-              placeholder="Password"
-              onChange={handleChange('password1')}
-              value={password1}
-            />
-            <input
-              className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
-              type="password"
-              placeholder="Confirm Password"
-              onChange={handleChange('password2')}
-              value={password2}
-            />
-          </div>
+        <Modal title="Add data" visible={isModalVisible} footer={null} onCancel={handleCancel}>
+          <AddAdminForm handleOk={handleOk}/>
         </Modal>
         <Table columns={columns} dataSource={data} />
       </CardBody>
