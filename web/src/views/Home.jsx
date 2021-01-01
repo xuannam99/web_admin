@@ -86,24 +86,24 @@ const Home = ({ history }) => {
       </div>
     )
   }
-  const getPosts = () => {
-    const token = getCookie('token');
-    axios
-      .get(`${process.env.REACT_APP_API_URL}`, {
-        headers: {
-          Authorization: token,
-        },
-      })
-      .then((res) => {
-        setData(res.data.data);
-      })
-      .catch((err) => {
-        console.log(err.response);
-      });
-  };
-  useEffect(() => {
-    getPosts();
-  }, [load]);
+  // const getPosts = () => {
+  //   const token = getCookie('token');
+  //   axios
+  //     .get(`${process.env.REACT_APP_API_URL}`, {
+  //       headers: {
+  //         Authorization: token,
+  //       },
+  //     })
+  //     .then((res) => {
+  //       setData(res.data.data);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err.response);
+  //     });
+  // };
+  // useEffect(() => {
+  //   getPosts();
+  // }, [load]);
   return (
     <div style={{ flex: 1 }}>
       <Layout>

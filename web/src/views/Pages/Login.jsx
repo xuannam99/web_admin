@@ -44,7 +44,7 @@ const Login = ({ history }) => {
       })
       .then((res) => {
         console.log(res.data);
-        //informParent(res);
+        informParent(res);
       })
       .catch((error) => {
         console.log('FACEBOOK SIGNIN ERROR', error.response);
