@@ -19,11 +19,11 @@ const Login = ({ history }) => {
 
   const sendGoogleToken = (tokenId) => {
     axios
-      .post(`${process.env.REACT_APP_API_URL}/auth/google`, {
+      .post(`${process.env.REACT_APP_API_URL}/admin/google`, {
         idToken: tokenId,
       })
       .then((res) => {
-        console.log(res.data);
+        console.log('111111111111111111',res.data);
         // kiem tra tai khoan
         informParent(res);
       })
@@ -39,12 +39,12 @@ const Login = ({ history }) => {
 
   const sendFacebookToken = (accessToken) => {
     axios
-      .post(`${process.env.REACT_APP_API_URL}/auth/facebook`, {
+      .post(`${process.env.REACT_APP_API_URL}/admin/facebook`, {
         accessToken,
       })
       .then((res) => {
         console.log(res.data);
-        informParent(res);
+        //informParent(res);
       })
       .catch((error) => {
         console.log('FACEBOOK SIGNIN ERROR', error.response);
@@ -67,7 +67,7 @@ const Login = ({ history }) => {
     if (email && password1) {
       setFormData({ ...formData, textChange: 'Submitting' });
       axios
-        .post(`${process.env.REACT_APP_API_URL}/login`, {
+        .post(`${process.env.REACT_APP_API_URL}/admin/login`, {
           email,
           password: password1,
         })
