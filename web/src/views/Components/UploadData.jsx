@@ -157,8 +157,7 @@ export default function UploadData(props) {
         })
         array.sort(function (a, b) {
           return a.IDTest - b.IDTest;
-        });
-        
+        });   
         setData(array);
       });
   }

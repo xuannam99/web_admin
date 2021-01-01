@@ -6,7 +6,7 @@ import Card from "./Card/Card.jsx";
 import CardHeader from "./Card/CardHeader.jsx";
 import CardBody from "./Card/CardBody.jsx";
 import "antd/dist/antd.css";
-import { Table, Tag, Space, Button, Modal } from "antd";
+import { Form, Input, Button, Modal } from "antd";
 const styles = {
   typo: {
     paddingLeft: "25%",
@@ -51,14 +51,50 @@ export default function Notification() {
 
   const packageBuy = ['orange', 'red', 'blue', 'purple'];
 
-  const handleOk = () => {
-
-  };
   const handleCancel = () => {
     setIsModalVisible(false);
   };
   const showModal = () => {
     setIsModalVisible(true);
+  };
+  const sendMessage=(values)=>{
+    fetch(`https://toeic-seb-firebase.herokuapp.com/sendmessage/send/package`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': "*",
+        mode: 'no-cors'
+      },
+      body: JSON.stringify({
+        title: values.Title,
+        text: values.Content,
+      }),
+    }).then((data) => {
+      console.log(data.json());
+    })
+  }
+  const onFinish = (values) => {
+    sendMessage(values);
+    setIsModalVisible(false);
+  };
+  const layout = {
+    labelCol: {
+      span: 3,
+    },
+    wrapperCol: {
+      span: 16,
+    },
+  };
+  const validateMessages = {
+    required: '${label} is required!',
+    types: {
+      email: '${label} is not a valid email!',
+      number: '${label} is not a valid number!',
+    },
+    number: {
+      range: '${label} must be between ${min} and ${max}',
+    },
   };
   return (
     <Card>
@@ -77,7 +113,11 @@ export default function Notification() {
             <text style={{ textAlign: 'start', fontSize: 15, color: '#0A81B9' }}>Gửi thông báo giảm giá <text style={{ fontWeight: 'bold', color: 'black' }}>5%</text> cho gói <text style={{ fontWeight: 'bold' }}>BASIC 1</text></text>
           </div>
           <div style={{ flex: 3, justifyContent: 'flex-end', display: 'flex' }}>
-            <Button>Send</Button>
+            <Button
+              onClick={()=>{
+                sendMessage({Title:"",Content:""})
+              }}
+            >Send</Button>
           </div>
         </div>
         <div style={{ borderBottomColor: '#A0ABA6', borderBottomWidth: 1, }} />
@@ -104,7 +144,8 @@ export default function Notification() {
             <text style={{ textAlign: 'start', fontSize: 15, color: '#0A81B9' }}>Gửi thông báo giảm giá <text style={{ fontWeight: 'bold', color: 'black' }}>5%</text> cho gói <text style={{ fontWeight: 'bold' }}>PREMIUM</text></text>
           </div>
           <div style={{ flex: 3, justifyContent: 'flex-end', display: 'flex' }}>
-            <Button>Send</Button>
+            <Button
+            >Send</Button>
           </div>
         </div>
         <div style={{ borderBottomColor: '#A0ABA6', borderBottomWidth: 1, }} />
@@ -115,10 +156,31 @@ export default function Notification() {
           <div style={{ flex: 3, justifyContent: 'flex-end', display: 'flex' }}>
             <Button style={{ backgroundColor: '#ab47bc', color: 'white' }} onClick={
               showModal
-            }>Cutom</Button>
+            }>Custom</Button>
           </div>
         </div>
-        <Modal title="Custom" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+        <Modal title="Custom" visible={isModalVisible} footer={null} onCancel={handleCancel}>
+          <Form {...layout} name="nest-messages" onFinish={onFinish} validateMessages={validateMessages}>
+            <Form.Item
+              name={'Title'}
+              label="Title"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item name={'Content'} label="Content">
+              <Input.TextArea />
+            </Form.Item>
+            <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 3 }}>
+              <Button type="primary" htmlType="submit">
+                Submit
+        </Button>
+            </Form.Item>
+          </Form>
         </Modal>
       </CardBody>
     </Card>
