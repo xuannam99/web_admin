@@ -71,10 +71,10 @@ const handleOk = (values) => {
     updateProfile(values)
         .then(data => {
             if (data.status) {
-                openNotification('Update thành công.');
+                openNotification('Update thông tin thành công.');
             }
             else {
-                openNotification('Update thất bại!!');
+                openNotification('Update thông tin thất bại!!');
             }
         });
   };

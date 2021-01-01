@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
@@ -84,20 +84,6 @@ const columns = [
   }
 ];
 
-const data = [
-  {
-    Buy: "0",
-    IDTest: 1,
-    IDYear: 2020,
-    Name: "đề 1"
-  },
-  {
-    Buy: "0",
-    IDTest: 2,
-    IDYear: 2020,
-    Name: "đề 2"
-  },
-];
 let content = [
   {
     name: 'part1',
@@ -154,6 +140,28 @@ export default function UploadData(props) {
   const classes = useStyles();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
+
+  const getData = async () => {
+    return await fetch(`https://toeic-seb-firebase.herokuapp.com/database/test/`)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data.length);
+        let array = data.map(element => {
+          return {
+            Buy: element.Buy,
+            IDTest: element.IDTest,
+            IDYear: element.IDYear,
+            Name: element.Name,
+          }
+        })
+        array.sort(function (a, b) {
+          return a.IDTest - b.IDTest;
+        });
+        
+        setData(array);
+      });
+  }
   // name and data post database
   const dataUpload = {
     part1: [],
@@ -308,14 +316,14 @@ export default function UploadData(props) {
               status: data.status
             })
           }
-        })
-    }
+        });
+    };
     // set data notification
     setDataNotification(res);
     setLoading(false); // set loadding
     setIsModalVisible(false);
-   
   }
+  // notification
   const openNotification = () => {
     const args = {
       message: 'Thông báo!!',
@@ -325,9 +333,11 @@ export default function UploadData(props) {
     };
     notification.open(args);
   };
+  // show add 
   const showModal = () => {
     setIsModalVisible(true);
   };
+
   const handleOk = () => {
     if (checkDataUpload) {
       setLoading(true);
@@ -338,9 +348,13 @@ export default function UploadData(props) {
     }
   };
   const handleCancel = () => {
-    setLoading(false);
-    setIsModalVisible(false);
+    if(!loading){
+      setIsModalVisible(false);
+    }
   };
+  useEffect(() => {
+    getData();
+  }, [])
   return (
     <Card>
       <CardHeader color="primary">
