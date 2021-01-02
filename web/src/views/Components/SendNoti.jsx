@@ -82,7 +82,7 @@ export default function Notification() {
         draggable: true,
         progress: undefined,
       });
-    }).catch(()=>{
+    }).catch(() => {
       toast.error('Đã xãy ra lỗi!', {
         position: "top-right",
         autoClose: 5000,
@@ -91,7 +91,7 @@ export default function Notification() {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        });
+      });
     })
   }
   const sendVoca = () => {
@@ -104,7 +104,8 @@ export default function Notification() {
         mode: 'no-cors'
       },
       body: JSON.stringify({
-
+        title: 'values.Title',
+        text: 'values.Content',
       }),
     }).then(() => {
       toast.success('Gửi thành công', {
@@ -116,7 +117,8 @@ export default function Notification() {
         draggable: true,
         progress: undefined,
       });
-    }).catch(()=>{
+    }).catch((err) => {
+      console.log('????',err + '')
       toast.error('Đã xãy ra lỗi!', {
         position: "top-right",
         autoClose: 5000,
@@ -125,7 +127,7 @@ export default function Notification() {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        });
+      });
     })
   }
   const onFinish = (values) => {
