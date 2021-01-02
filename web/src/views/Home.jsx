@@ -11,10 +11,10 @@ import {
   UploadOutlined,
   BellOutlined,
   NotificationOutlined,
-  ProfileOutlined 
+  ProfileOutlined
 } from '@ant-design/icons';
 
-import {getLocalStorage} from '../controllers/localStorage';
+import { getLocalStorage } from '../controllers/localStorage';
 // auth
 import { ToastContainer } from 'react-toastify';
 import { isAuth, getCookie, signout } from '../controllers/localStorage';
@@ -36,11 +36,12 @@ const Home = ({ history }) => {
   const [index, setIndex] = useState(1);
   const [data, setData] = useState([]);
   const [dataAdmin, setDataAdmin] = useState({
-    username:'xuannam',
+    username: 'xuannam',
     email: 'teo12011999@gmail.com',
     phone: '1234343434',
     prefix: "86",
   });
+  const [name, setName] = useState('');
   const [dataNoti, setDataNoti] = useState([]);
   const [amountNoti, setAmountNoti] = useState(0);
   const [load, setLoad] = useState(false);
@@ -83,26 +84,31 @@ const Home = ({ history }) => {
   // set view noti
   const viewNoti = () => {
     return (
-      <div style={{overflowY: 'scroll',height:200}} >
+      <div style={{ overflowY: 'scroll', height: 200 }} >
         {
-            dataNoti.map((element) =>
+          dataNoti.map((element) =>
             <Noti
               content={element.content}
               date={element.date}
-              status={element.status}/>
+              status={element.status} />
           )
         }
       </div>
     )
   }
-  const getdataAdmin = () => {
-    let user = getLocalStorage('user');
-    console.log(user);
-    setDataAdmin(user);
-  };
   useEffect(() => {
-    getdataAdmin();
-  }, [load]);
+    let user = getLocalStorage('user');
+    console.log('lonnam', user);
+    let lonnam = {
+      username: user.name,
+      email: user.email,
+      phone: user.phonenumber,
+      prefix: "86",
+    }
+    setName(user.name);
+    console.log('manh', lonnam)
+    setDataAdmin(lonnam);
+  }, [name]);
   return (
     <div style={{ flex: 1 }}>
       <Layout>
@@ -150,7 +156,7 @@ const Home = ({ history }) => {
                   <Popover
                     placement="leftTop"
                     content={
-                      viewNoti      
+                      viewNoti
                     }
                     title="All notification"
                     trigger="click"
@@ -180,9 +186,9 @@ const Home = ({ history }) => {
             {
               index === 1 ? <ListUserAdmin />
                 : index === 2 ? <ListUser />
-                : index === 3? <UpData setDataNotification={(setDataNotification)}/>
-                :index === 4?<Notification></Notification>
-                :<Profile dataAdmin={dataAdmin}/>
+                  : index === 3 ? <UpData setDataNotification={(setDataNotification)} />
+                    : index === 4 ? <Notification></Notification>
+                      : <Profile dataAdmin={dataAdmin} />
             }
           </div>
         </Layout>

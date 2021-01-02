@@ -6,7 +6,8 @@ import Card from "./Card/Card.jsx";
 import CardHeader from "./Card/CardHeader.jsx";
 import CardBody from "./Card/CardBody.jsx";
 import "antd/dist/antd.css";
-import { Form, Input, Button, Modal, notification } from "antd";
+import { Form, Input, Button, Modal } from "antd";
+import { ToastContainer, toast } from 'react-toastify';
 const styles = {
   typo: {
     paddingLeft: "25%",
@@ -57,7 +58,7 @@ export default function Notification() {
   const showModal = () => {
     setIsModalVisible(true);
   };
-  const sendMessage=(values)=>{
+  const sendMessage = (values) => {
     fetch(`https://toeic-seb-firebase.herokuapp.com/sendmessage/send/package`, {
       method: 'POST',
       headers: {
@@ -72,6 +73,59 @@ export default function Notification() {
       }),
     }).then((data) => {
       console.log(data.json());
+      toast.success('Gửi thành công', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }).catch(()=>{
+      toast.error('Đã xãy ra lỗi!', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
+    })
+  }
+  const sendVoca = () => {
+    fetch(`https://toeic-seb-firebase.herokuapp.com/sendmessage/send/vocarandom`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': "*",
+        mode: 'no-cors'
+      },
+      body: JSON.stringify({
+
+      }),
+    }).then(() => {
+      toast.success('Gửi thành công', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }).catch(()=>{
+      toast.error('Đã xãy ra lỗi!', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
     })
   }
   const onFinish = (values) => {
@@ -98,6 +152,7 @@ export default function Notification() {
   };
   return (
     <Card>
+      <ToastContainer />
       <CardHeader color="primary">
         <div style={{ display: 'flex' }}>
           <div style={{ display: 'flex', flex: 1 }}>
@@ -114,8 +169,8 @@ export default function Notification() {
           </div>
           <div style={{ flex: 3, justifyContent: 'flex-end', display: 'flex' }}>
             <Button
-              onClick={()=>{
-                sendMessage({Title:"Thông báo khuyến mãi 😍😍😍",Content:"Giảm giá 5% cho gói BASIC 1"})
+              onClick={() => {
+                sendMessage({ Title: "Thông báo khuyến mãi 😍😍😍", Content: "Giảm giá 5% cho gói BASIC 1" })
               }}
             >Send</Button>
           </div>
@@ -126,9 +181,9 @@ export default function Notification() {
             <text style={{ textAlign: 'start', fontSize: 15, color: '#0A81B9' }}>Gửi thông báo giảm giá <text style={{ fontWeight: 'bold', color: 'black' }}>5%</text> cho gói <text style={{ fontWeight: 'bold' }}>BASIC 2</text></text>
           </div>
           <div style={{ flex: 3, justifyContent: 'flex-end', display: 'flex' }}>
-          <Button
-              onClick={()=>{
-                sendMessage({Title:"Thông báo khuyến mãi 😍😍😍",Content:"Giảm giá 5% cho gói BASIC 2"})
+            <Button
+              onClick={() => {
+                sendMessage({ Title: "Thông báo khuyến mãi 😍😍😍", Content: "Giảm giá 5% cho gói BASIC 2" })
               }}
             >Send</Button>
           </div>
@@ -139,9 +194,9 @@ export default function Notification() {
             <text style={{ textAlign: 'start', fontSize: 15, color: '#0A81B9' }}>Gửi thông báo giảm giá <text style={{ fontWeight: 'bold', color: 'black' }}>5%</text> cho gói <text style={{ fontWeight: 'bold' }}>STANDART</text></text>
           </div>
           <div style={{ flex: 3, justifyContent: 'flex-end', display: 'flex' }}>
-          <Button
-              onClick={()=>{
-                sendMessage({Title:"Thông báo khuyến mãi 😍😍😍",Content:"Giảm giá 5% cho gói STANDART"})
+            <Button
+              onClick={() => {
+                sendMessage({ Title: "Thông báo khuyến mãi 😍😍😍", Content: "Giảm giá 5% cho gói STANDART" })
               }}
             >Send</Button>
           </div>
@@ -152,9 +207,9 @@ export default function Notification() {
             <text style={{ textAlign: 'start', fontSize: 15, color: '#0A81B9' }}>Gửi thông báo giảm giá <text style={{ fontWeight: 'bold', color: 'black' }}>5%</text> cho gói <text style={{ fontWeight: 'bold' }}>PREMIUM</text></text>
           </div>
           <div style={{ flex: 3, justifyContent: 'flex-end', display: 'flex' }}>
-          <Button
-              onClick={()=>{
-                sendMessage({Title:"Thông báo khuyến mãi 😍😍😍",Content:"Giảm giá 5% cho gói PREMIUM"})
+            <Button
+              onClick={() => {
+                sendMessage({ Title: "Thông báo khuyến mãi 😍😍😍", Content: "Giảm giá 5% cho gói PREMIUM" })
               }}
             >Send</Button>
           </div>
@@ -168,6 +223,18 @@ export default function Notification() {
             <Button style={{ backgroundColor: '#ab47bc', color: 'white' }} onClick={
               showModal
             }>Custom</Button>
+          </div>
+        </div>
+        <div style={{ display: 'flex', padding: 10, flexDirection: 'row' }} >
+          <div style={{ flex: 7, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <text style={{ textAlign: 'start', fontSize: 15, color: '#0A81B9' }}>Gửi ngẩu nhiên 1 từ vựng</text>
+          </div>
+          <div style={{ flex: 3, justifyContent: 'flex-end', display: 'flex' }}>
+            <Button style={{ backgroundColor: '#ab47bc', color: 'white' }}
+              onClick={() => {
+                sendVoca();
+              }}
+            >Send</Button>
           </div>
         </div>
         <Modal title="Custom" visible={isModalVisible} footer={null} onCancel={handleCancel}>

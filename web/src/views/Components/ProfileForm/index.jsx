@@ -58,9 +58,9 @@ const ProfileForm = (props) => {
           width: 70,
         }}
       >
-        <Option value="84">+84</Option>
-        <Option value="86">+86</Option>
-        <Option value="89">+89</Option>
+        <Option key="84" value="84">+84</Option>
+        <Option key="86" value="86">+86</Option>
+        <Option key="89" value="89">+89</Option>
       </Select>
     </Form.Item>
   );

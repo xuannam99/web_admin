@@ -23,9 +23,20 @@ const Login = ({ history }) => {
         idToken: tokenId,
       })
       .then((res) => {
-        console.log('111111111111111111',res.data);
         // kiem tra tai khoan
-        informParent(res);
+        if (res.data.user.status === true) {
+          informParent(res);
+        } else {
+          toast.error('Tài khoản này chưa có quyền truy cập. Vui lòng liên hệ admin đề mở khóa tài khoản!', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        }
       })
       .catch((error) => {
         console.log('GOOGLE SIGNIN ERROR', error.response);
@@ -170,7 +181,7 @@ const Login = ({ history }) => {
                       }}
                     >
                       <div className=" p-2 rounded-full ">
-                        <i className="fab fa-google fa-2x"  style={{color: 'red'}}/>
+                        <i className="fab fa-google fa-2x" style={{ color: 'red' }} />
                       </div>
                     </button>
                   )}
@@ -195,7 +206,7 @@ const Login = ({ history }) => {
                       </div>
                     </button>
                   )}
-                />              
+                />
               </div>
             </div>
           </div>
