@@ -1,4 +1,4 @@
-
+import React, { useState,useEffect } from 'react';
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
@@ -9,6 +9,7 @@ import CardHeader from "./Card/CardHeader.jsx";
 import CardBody from "./Card/CardBody.jsx";
 import ProfileForm from './ProfileForm';
 import {notification } from "antd";
+
 const styles = {
     typo: {
         paddingLeft: "25%",
@@ -45,51 +46,12 @@ const styles = {
         textDecoration: "none"
     }
 };
-// update profile
-const updateProfile = async (values) => {
-    return new Promise((resolve, reject) => {
-        fetch(`https://toeic-seb.herokuapp.com/admin/register`, {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json, text/plain, */*',
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': "*",
-                mode: 'no-cors'
-            },
-            body: JSON.stringify({
-                username: values.username,
-                email: values.email,
-                password: values.confirm,
-                phone: values.phone
-            }),
-        }).then((data) => {
-            resolve(data.json);
-        })
-    });
-}
-const handleOk = (values) => {    
-    updateProfile(values)
-        .then(data => {
-            if (data.status) {
-                openNotification('Update thông tin thành công.');
-            }
-            else {
-                openNotification('Update thông tin thất bại!!');
-            }
-        });
-  };
-  const openNotification = (content) => {
-    const args = {
-        message: 'Thông báo!!',
-        description: content,
-        duration: 0,
-    };
-    notification.open(args);
-};
+
+
 const useStyles = makeStyles(styles);
-export default function Profile(props) {
-    const { dataAdmin } = props;
+export default function Profile() {
     const classes = useStyles();
+   
     return (
         <GridContainer>
             <GridItem xs={12} sm={12} md={12}>
@@ -107,7 +69,7 @@ export default function Profile(props) {
                         </div>
                     </CardHeader>
                     <CardBody>
-                        <ProfileForm handleOk={handleOk} dataAdmin={dataAdmin}/>                
+                        <ProfileForm />                
                     </CardBody>
                 </Card>
             </GridItem>

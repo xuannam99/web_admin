@@ -14,7 +14,6 @@ import {
   ProfileOutlined
 } from '@ant-design/icons';
 
-import { getLocalStorage } from '../controllers/localStorage';
 // auth
 import { ToastContainer } from 'react-toastify';
 import { isAuth, getCookie, signout } from '../controllers/localStorage';
@@ -30,18 +29,9 @@ import Noti from './Components/Noti';
 import Notification from './Components/SendNoti';
 import Profile from './Components/Profile'
 const { Header, Sider, Content } = Layout; // views
-let heightScreen = window.innerHeight;
 const Home = ({ history }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [index, setIndex] = useState(1);
-  const [data, setData] = useState([]);
-  const [dataAdmin, setDataAdmin] = useState({
-    username: 'xuannam',
-    email: 'teo12011999@gmail.com',
-    phone: '1234343434',
-    prefix: "86",
-  });
-  const [name, setName] = useState('');
   const [dataNoti, setDataNoti] = useState([]);
   const [amountNoti, setAmountNoti] = useState(0);
   const [load, setLoad] = useState(false);
@@ -50,6 +40,14 @@ const Home = ({ history }) => {
   const toggle = () => {
     setCollapsed(!collapsed);
   };
+  const checkIAuth=()=>{
+    if(!isAuth()){
+      history.push('/Login')
+    }
+  }
+  useEffect(()=>{
+    checkIAuth();
+  },[])
   // logout
   const Logout = () => {
     signout(() => {
@@ -96,22 +94,8 @@ const Home = ({ history }) => {
       </div>
     )
   }
-  useEffect(() => {
-    let user = getLocalStorage('user');
-    console.log('lonnam', user);
-    let lonnam = {
-      username: user.name,
-      email: user.email,
-      phone: user.phonenumber,
-      prefix: "86",
-    }
-    setName(user.name);
-    console.log('manh', lonnam)
-    setDataAdmin(lonnam);
-  }, [name]);
   return (
-    <div style={{ flex: 1 }}>
-      <Layout>
+      <Layout style={{minHeight:'100vh'}}>
         <Sider trigger={null} collapsible collapsed={collapsed}>
           <div className="logo" style={{ justifyContent: 'center', display: 'flex', alignItems: 'center' }}>
             <h4 style={{ color: 'white' }}>TOEIC SEB</h4>
@@ -119,26 +103,31 @@ const Home = ({ history }) => {
           <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
             <Menu.Item key="1" icon={<TeamOutlined />} onClick={() => {
               setIndex(1);
+              checkIAuth();
             }} >
               Admin
             </Menu.Item>
             <Menu.Item key="2" icon={<UsergroupAddOutlined />} onClick={() => {
               setIndex(2);
+              checkIAuth();
             }}>
               User
             </Menu.Item>
             <Menu.Item key="3" icon={<UploadOutlined />} onClick={() => {
               setIndex(3);
+              checkIAuth();
             }}>
               Data
             </Menu.Item>
             <Menu.Item key="4" icon={<NotificationOutlined />} onClick={() => {
               setIndex(4);
+              checkIAuth();
             }}>
               Send notification
             </Menu.Item>
             <Menu.Item key="5" icon={<ProfileOutlined />} onClick={() => {
               setIndex(5);
+              checkIAuth();
             }}>
               Profile
             </Menu.Item>
@@ -182,18 +171,17 @@ const Home = ({ history }) => {
               </div>
             </div>
           </Header>
-          <div style={{ height: heightScreen, padding: 10 }}>
+          <div style={{ padding: 10 }}>
             {
               index === 1 ? <ListUserAdmin />
                 : index === 2 ? <ListUser />
                   : index === 3 ? <UpData setDataNotification={(setDataNotification)} />
                     : index === 4 ? <Notification></Notification>
-                      : <Profile dataAdmin={dataAdmin} />
+                      : <Profile/>
             }
           </div>
         </Layout>
       </Layout>
-    </div>
   );
 }
 export default Home
