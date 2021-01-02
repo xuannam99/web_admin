@@ -109,7 +109,7 @@ export default function UploadData() {
   ];
   useEffect(() => {
     getData();
-  }, [])
+  }, [reload])
 
   // show modal admin
   const showModal = () => {
@@ -117,9 +117,10 @@ export default function UploadData() {
   };
   // ok add admin
   const handleOk = (values) => {
+    
     signUp(values)
       .then(data => {
-        if (data.status) {
+        if (data !== 'erro') {
           openNotification('Thêm admin thành công.');
           setReload(!reload);
         }
@@ -160,15 +161,19 @@ export default function UploadData() {
           phone: values.phone
         }),
       }).then((data) => {
-        resolve(data.json);
-      })
+        resolve(data);
+      }).catch((erro)=>{reject('erro')})
     });
   }
   // api edit admin
   const editAdmin = async () => {
+    let query = `https://toeic-seb.herokuapp.com/admin/disable/${adminCurrent.id}`;
+    if(adminCurrent.status === "false"){
+      query = `https://toeic-seb.herokuapp.com/admin/enable/${adminCurrent.id}`;
+    }
     return new Promise((resolve, reject) => {
-      fetch(`https://toeic-seb.herokuapp.com/admin/register`, {
-        method: 'POST',
+      fetch(query, {
+        method: 'PUT',
         headers: {
           Accept: 'application/json, text/plain, */*',
           'Content-Type': 'application/json',
@@ -176,21 +181,19 @@ export default function UploadData() {
           mode: 'no-cors'
         },
         body: JSON.stringify({
-          username: adminCurrent.username,
-          email: adminCurrent.email,
-          password: adminCurrent.confirm,
-          phone: adminCurrent.phone
         }),
       }).then((data) => {
-        resolve(data.json);
+        setLoadingEdit(false);
+        setReload(!reload);
+        resolve(data);
       })
     });
   }
   // edit admin
   const handleOkEdit = () => {
-    //setModalText(`Bạn có chắc chắn muôn disable admin không?`);
     setLoadingEdit(true);
-    //editAdmin();
+    editAdmin();
+    setVisibleEdit(false);
   };
   // cancel edit
   const handleCancelEdit = () => {
@@ -231,7 +234,7 @@ export default function UploadData() {
             return {
               onDoubleClick: event => {
                 setAdminCurrent(data[rowIndex]);
-                if (data[rowIndex].status) {
+                if (data[rowIndex].status === "true") {
                   setModalText('Bạn có chắc chắn muốn disable admin không?');
                 } else {
                   setModalText('Bạn có chắc chắn muốn enable admin không?');

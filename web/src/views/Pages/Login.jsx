@@ -54,8 +54,20 @@ const Login = ({ history }) => {
         accessToken,
       })
       .then((res) => {
-        console.log(res.data);
-        informParent(res);
+         // kiem tra tai khoan
+         if (res.data.user.status === true) {
+          informParent(res);
+        } else {
+          toast.error('Tài khoản này chưa có quyền truy cập. Vui lòng liên hệ admin đề mở khóa tài khoản!', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        }
       })
       .catch((error) => {
         console.log('FACEBOOK SIGNIN ERROR', error.response);
@@ -65,12 +77,10 @@ const Login = ({ history }) => {
     console.log(response);
     sendGoogleToken(response.tokenId);
   };
-
   const responseFacebook = (response) => {
     console.log(response);
     sendFacebookToken(response.accessToken);
   };
-
   // check login
   const handleSubmit = (e) => {
     console.log(process.env.REACT_APP_API_URL);
