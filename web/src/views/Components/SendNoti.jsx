@@ -6,9 +6,7 @@ import Card from "./Card/Card.jsx";
 import CardHeader from "./Card/CardHeader.jsx";
 import CardBody from "./Card/CardBody.jsx";
 import "antd/dist/antd.css";
-import { Combobox } from 'react-widgets'
-
-import { Table, Tag, Space, Button, Modal } from "antd";
+import { Form, Input, Button, Modal, notification } from "antd";
 const styles = {
   typo: {
     paddingLeft: "25%",
@@ -50,27 +48,53 @@ const useStyles = makeStyles(styles);
 export default function Notification() {
   const classes = useStyles();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password1: '',
-    password2: '',
-    textChange: 'Sign Up',
-  });
-  const { name, email, password1, password2, textChange } = formData;
+
   const packageBuy = ['orange', 'red', 'blue', 'purple'];
 
-  const handleChange = (text) => (e) => {
-    setFormData({ ...formData, [text]: e.target.value });
-  };
-  const handleOk = () => {
-
-  };
   const handleCancel = () => {
     setIsModalVisible(false);
   };
   const showModal = () => {
     setIsModalVisible(true);
+  };
+  const sendMessage=(values)=>{
+    fetch(`https://toeic-seb-firebase.herokuapp.com/sendmessage/send/package`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': "*",
+        mode: 'no-cors'
+      },
+      body: JSON.stringify({
+        title: values.Title,
+        text: values.Content,
+      }),
+    }).then((data) => {
+      console.log(data.json());
+    })
+  }
+  const onFinish = (values) => {
+    sendMessage(values);
+    setIsModalVisible(false);
+  };
+  const layout = {
+    labelCol: {
+      span: 3,
+    },
+    wrapperCol: {
+      span: 16,
+    },
+  };
+  const validateMessages = {
+    required: '${label} is required!',
+    types: {
+      email: '${label} is not a valid email!',
+      number: '${label} is not a valid number!',
+    },
+    number: {
+      range: '${label} must be between ${min} and ${max}',
+    },
   };
   return (
     <Card>
@@ -89,37 +113,53 @@ export default function Notification() {
             <text style={{ textAlign: 'start', fontSize: 15, color: '#0A81B9' }}>Gửi thông báo giảm giá <text style={{ fontWeight: 'bold', color: 'black' }}>5%</text> cho gói <text style={{ fontWeight: 'bold' }}>BASIC 1</text></text>
           </div>
           <div style={{ flex: 3, justifyContent: 'flex-end', display: 'flex' }}>
-            <Button>Send</Button>
+            <Button
+              onClick={()=>{
+                sendMessage({Title:"Thông báo khuyến mãi 😍😍😍",Content:"Giảm giá 5% cho gói BASIC 1"})
+              }}
+            >Send</Button>
           </div>
         </div>
-        <div style={{ borderBottomColor: 'black', borderBottomWidth: 1, }} />
+        <div style={{ borderBottomColor: '#A0ABA6', borderBottomWidth: 1, }} />
         <div style={{ display: 'flex', padding: 10, flexDirection: 'row' }} >
           <div style={{ flex: 7, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <text style={{ textAlign: 'start', fontSize: 15, color: '#0A81B9' }}>Gửi thông báo giảm giá <text style={{ fontWeight: 'bold', color: 'black' }}>5%</text> cho gói <text style={{ fontWeight: 'bold' }}>BASIC 2</text></text>
           </div>
           <div style={{ flex: 3, justifyContent: 'flex-end', display: 'flex' }}>
-            <Button>Send</Button>
+          <Button
+              onClick={()=>{
+                sendMessage({Title:"Thông báo khuyến mãi 😍😍😍",Content:"Giảm giá 5% cho gói BASIC 2"})
+              }}
+            >Send</Button>
           </div>
         </div>
-        <div style={{ borderBottomColor: 'black', borderBottomWidth: 1, }} />
+        <div style={{ borderBottomColor: '#A0ABA6', borderBottomWidth: 1, }} />
         <div style={{ display: 'flex', padding: 10, flexDirection: 'row' }} >
           <div style={{ flex: 7, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <text style={{ textAlign: 'start', fontSize: 15, color: '#0A81B9' }}>Gửi thông báo giảm giá <text style={{ fontWeight: 'bold', color: 'black' }}>5%</text> cho gói <text style={{ fontWeight: 'bold' }}>STANDART</text></text>
           </div>
           <div style={{ flex: 3, justifyContent: 'flex-end', display: 'flex' }}>
-            <Button>Send</Button>
+          <Button
+              onClick={()=>{
+                sendMessage({Title:"Thông báo khuyến mãi 😍😍😍",Content:"Giảm giá 5% cho gói STANDART"})
+              }}
+            >Send</Button>
           </div>
         </div>
-        <div style={{ borderBottomColor: 'black', borderBottomWidth: 1, }} />
+        <div style={{ borderBottomColor: '#A0ABA6', borderBottomWidth: 1, }} />
         <div style={{ display: 'flex', padding: 10, flexDirection: 'row' }} >
           <div style={{ flex: 7, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <text style={{ textAlign: 'start', fontSize: 15, color: '#0A81B9' }}>Gửi thông báo giảm giá <text style={{ fontWeight: 'bold', color: 'black' }}>5%</text> cho gói <text style={{ fontWeight: 'bold' }}>PREMIUM</text></text>
           </div>
           <div style={{ flex: 3, justifyContent: 'flex-end', display: 'flex' }}>
-            <Button>Send</Button>
+          <Button
+              onClick={()=>{
+                sendMessage({Title:"Thông báo khuyến mãi 😍😍😍",Content:"Giảm giá 5% cho gói PREMIUM"})
+              }}
+            >Send</Button>
           </div>
         </div>
-        <div style={{ borderBottomColor: 'black', borderBottomWidth: 1, }} />
+        <div style={{ borderBottomColor: '#A0ABA6', borderBottomWidth: 1, }} />
         <div style={{ display: 'flex', padding: 10, flexDirection: 'row' }} >
           <div style={{ flex: 7, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <text style={{ textAlign: 'start', fontSize: 15, color: '#0A81B9' }}>Tùy chỉnh</text>
@@ -127,40 +167,31 @@ export default function Notification() {
           <div style={{ flex: 3, justifyContent: 'flex-end', display: 'flex' }}>
             <Button style={{ backgroundColor: '#ab47bc', color: 'white' }} onClick={
               showModal
-            }>Cutom</Button>
+            }>Custom</Button>
           </div>
         </div>
-        <Modal title="Add data" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-          <div className="mx-auto max-w-xs relative ">
-            <input
-              className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
-              type="text"
-              placeholder="Name"
-              onChange={handleChange('name')}
-              value={name}
-            />
-            <input
-              className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
-              type="email"
-              placeholder="Email"
-              onChange={handleChange('email')}
-              value={email}
-            />
-            <input
-              className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
-              type="password"
-              placeholder="Password"
-              onChange={handleChange('password1')}
-              value={password1}
-            />
-            <input
-              className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
-              type="password"
-              placeholder="Confirm Password"
-              onChange={handleChange('password2')}
-              value={password2}
-            />
-          </div>
+        <Modal title="Custom" visible={isModalVisible} footer={null} onCancel={handleCancel}>
+          <Form {...layout} name="nest-messages" onFinish={onFinish} validateMessages={validateMessages}>
+            <Form.Item
+              name={'Title'}
+              label="Title"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item name={'Content'} label="Content">
+              <Input.TextArea />
+            </Form.Item>
+            <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 3 }}>
+              <Button type="primary" htmlType="submit">
+                Submit
+        </Button>
+            </Form.Item>
+          </Form>
         </Modal>
       </CardBody>
     </Card>
