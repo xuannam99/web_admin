@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
@@ -8,14 +8,15 @@ import CardBody from "./Card/CardBody.jsx";
 import XLSX from 'xlsx';
 import UploadFileView from './UploadFileView/index.jsx';
 import "antd/dist/antd.css";
-import { Table, Tag, Space, Button, Modal,notification } from "antd";
+import { Table, Tag, Select, Space, Button, Modal, notification } from "antd";
 import moment from "moment";
 // import icon
 import {
   SmileOutlined, FrownOutlined
 } from '@ant-design/icons';
 // api up data
-import { pushFile } from '../../controllers/PushData';
+import { pushFile, removeData, updateFile } from '../../controllers/PushData';
+import { element } from "prop-types";
 const styles = {
   typo: {
     paddingLeft: "25%",
@@ -60,29 +61,6 @@ let datasetFile = [{
   "abc": "sdef"
 }]
 
-// columns
-const columns = [
-  {
-    title: "Name",
-    dataIndex: "Name",
-    key: "Name"
-  },
-  {
-    title: "IDYear",
-    dataIndex: "IDYear",
-    key: "IDYear"
-  },
-  {
-    title: "IDTest",
-    dataIndex: "IDTest",
-    key: "IDTest"
-  },
-  {
-    title: "Buy",
-    dataIndex: "Buy",
-    key: "Buy"
-  }
-];
 
 let content = [
   {
@@ -138,15 +116,68 @@ let content = [
 export default function UploadData(props) {
   const { setDataNotification } = props;
   const classes = useStyles();
+  const [loadingEdit, setLoadingEdit] = React.useState(false);
+  const [loadingDelete, setLoadingDelete] = React.useState(false);
+  
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectUpdate, setSelectUpdate] = React.useState(''); // select part current
+  const [valueUpdate, setvalueUpdate] = React.useState('');
+  const [nameModal, setNameModal] = useState('Add');
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
+  const [dataUpdate, setDataUpdate] = React.useState([]);
+  const [visibleEdit, setVisibleEdit] = React.useState(false);  // load model edit
+  const [visibleDelete, setVisibleDelete] = React.useState(false);  // load model edit
+  // const [dataCurrent, setDataCurrent] = React.useState([]); // data current
+  const { Option } = Select;
+  // columns
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "Name",
+      key: "Name"
+    },
+    {
+      title: "IDYear",
+      dataIndex: "IDYear",
+      key: "IDYear"
+    },
+    {
+      title: "IDTest",
+      dataIndex: "IDTest",
+      key: "IDTest"
+    },
+    {
+      title: "Buy",
+      dataIndex: "Buy",
+      key: "Buy"
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (_, record) => (
+        <div style={{ width: 70, display: 'flex', paddingRight: 5 }}>
+          <Button type="primary"
+            onClick={() => {
+             
+              setNameModal('Update Data');
+              setVisibleEdit(true);
+            }}
+          >Update</Button>
+          <Button style={{ marginLeft: 10 }} type="primary"
+            onClick={() => {
+              setVisibleDelete(true);
+            }}>Delete</Button>
+        </div>
+      ),
+    },
+  ];
 
+  // get test
   const getData = async () => {
     return await fetch(`https://toeic-seb-firebase.herokuapp.com/database/test/`)
       .then(response => response.json())
       .then(data => {
-        console.log(data.length);
         let array = data.map(element => {
           return {
             Buy: element.Buy,
@@ -157,7 +188,7 @@ export default function UploadData(props) {
         })
         array.sort(function (a, b) {
           return a.IDTest - b.IDTest;
-        });   
+        });
         setData(array);
       });
   }
@@ -201,6 +232,7 @@ export default function UploadData(props) {
   }
   // set file 
   const uploadFile = async (e, name) => {
+    console.log(e);
     switch (name) {
       case 'part1': {
         UploadFile(e)
@@ -289,11 +321,36 @@ export default function UploadData(props) {
   // check data upload
   const checkDataUpload = () => {
     for (const property in dataUpload) {
-      if (property.length === 0 ) {
+      if (property.length === 0) {
         return false;
       }
     }
     return true;
+  }
+  const updateData = async () => {
+    let res = [];
+    console.log(dataUpdate)
+    await updateFile(dataUpdate, selectUpdate)
+      .then(data => {
+        updateFile(JSON.stringify({ IDYear: valueUpdate.IDYear, IDTest: valueUpdate.IDTest }), 'test')
+          .then(data => {
+            console.log(data);
+          })
+        res.push({
+          content: `Update data ${selectUpdate} success`,
+          date: moment().format('YYYY/MM/DD'),
+          status: true
+        })
+      }).catch((error) => {
+        res.push({
+          content: `Update data ${selectUpdate} fail`,
+          date: moment().format('YYYY/MM/DD'),
+          status: false
+        })
+      });
+    setDataNotification(res);
+    setVisibleEdit(false);
+    setLoadingEdit(false);
   }
   // push data firebase
   const pushData = async () => {
@@ -336,7 +393,6 @@ export default function UploadData(props) {
   const showModal = () => {
     setIsModalVisible(true);
   };
-
   const handleOk = () => {
     if (checkDataUpload) {
       setLoading(true);
@@ -347,10 +403,75 @@ export default function UploadData(props) {
     }
   };
   const handleCancel = () => {
-    if(!loading){
+    if (!loading) {
       setIsModalVisible(false);
     }
   };
+  // select file
+  const selectFile = async (e, name) => {
+    console.log(e);
+    UploadFile(e)
+      .then((data) => {
+        setDataUpdate(data);
+      })
+  }
+  // edit test
+  const handleOkEdit = () => {
+    if (dataUpdate !== '') {
+      updateData();
+    } else {
+      const args = {
+        message: 'Thông báo!!',
+        description:
+          'Vui lòng chọn file!!!',
+        duration: 0,
+      };
+      notification.open(args);
+    }
+    setLoadingEdit(true);
+  
+
+  };
+  // cancel edit
+  const handleCancelEdit = () => {
+    setVisibleEdit(false);
+    setLoadingEdit(false);
+  };
+  
+   // delete test
+   const handleOkDelete = async() => {
+    let res = [];
+    setLoadingDelete(true);
+    await removeData(valueUpdate)
+    .then(data => {
+      if (data.status) {
+        res.push({
+          content: `Remove data test ${valueUpdate.IDTest} year ${valueUpdate.IDYear} success`,
+          date: moment().format('YYYY/MM/DD'),
+          status: true
+        })
+      }
+      else {
+        res.push({
+          content: `Remove data ${valueUpdate.IDTest} year ${valueUpdate.IDYear} fail`,
+          date: moment().format('YYYY/MM/DD'),
+          status:false
+        })
+      }
+    });
+    setLoadingDelete(false);
+    setVisibleDelete(true);
+    setDataNotification(res);
+  };
+  // cancel delete test
+  const handleCancelDelete = () => {
+    setVisibleDelete(false);
+    setLoadingDelete(false);
+  };
+  // change select  
+  function onChangeSelect(value) {
+    setSelectUpdate(value);
+  }
   useEffect(() => {
     getData();
   }, [])
@@ -362,7 +483,11 @@ export default function UploadData(props) {
             <h4 className={classes.cardTitleWhite}>Up load data</h4>
           </div>
           <div style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end', display: 'flex' }}>
-            <Button type="primary" shape="circle" onClick={showModal} >
+            <Button type="primary" shape="circle" onClick={
+              () => {
+                setNameModal('Add Data');
+                showModal();
+              }} >
               +
             </Button>
           </div>
@@ -371,7 +496,7 @@ export default function UploadData(props) {
       <CardBody>
         <Modal
           visible={isModalVisible}
-          title="Add data"
+          title={nameModal}
           onOk={handleOk}
           onCancel={handleCancel}
           footer={[
@@ -392,7 +517,59 @@ export default function UploadData(props) {
             )
           }
         </Modal>
-        <Table columns={columns} dataSource={data} />
+        <Modal
+          title="Edit"
+          visible={visibleEdit}
+          onOk={handleOkEdit}
+          confirmLoading={loadingEdit}
+          onCancel={handleCancelEdit}
+        >
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <text style={{ marginRight: 10 }}>Chọn mục:</text>
+              <Select
+                showSearch
+                style={{ width: 200 }}
+                placeholder="Select a person"
+                optionFilterProp="children"
+                onChange={onChangeSelect}
+                // onFocus={onFocus}
+                // onBlur={onBlur}
+                //onSearch={onSearch}
+                filterOption={(input, option) =>
+                  // option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  console.log(input)
+                }
+              >
+                {content.map((element) =>
+                  <Option value={element.name}>{element.title}</Option>
+                )}
+              </Select>
+            </div>
+            <div style={{ flex: 1, marginTop: 20, paddingLeft: 75 }}>
+              <input type='file' name='file' id="input" accept=".xls,.xlsx"
+                onChange={(e) => selectFile(e, selectUpdate)} />
+            </div>
+          </div>
+        </Modal>
+        <Modal
+          title="Thông báo"
+          visible={visibleDelete}
+          onOk={handleOkDelete}
+          confirmLoading={loadingDelete}
+          onCancel={handleCancelDelete}
+        >
+          <p>Bạn có chắc chắn muốn xóa đề {valueUpdate.IDTest} năm {valueUpdate.IDYear} không?</p>
+        </Modal>
+        <Table
+          columns={columns}
+          dataSource={data}
+          onRow={(record, rowIndex) => {
+            return {
+              onClick: event => { setvalueUpdate(record) },
+            };
+          }}
+        />
       </CardBody>
     </Card>
   );

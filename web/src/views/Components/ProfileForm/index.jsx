@@ -74,7 +74,7 @@ const ProfileForm = () => {
 // update profile
 const updateProfile = async (values) => {
   return new Promise((resolve, reject) => {
-    fetch(`https://toeic-seb.herokuapp.com/admin/register`, {
+    fetch(`https://toeic-seb.herokuapp.com/admin/update/${values.id}`, {
       method: 'POST',
       headers: {
         Accept: 'application/json, text/plain, */*',
@@ -129,7 +129,6 @@ const prefixSelector = (
   </Form.Item>
 );
 return (
-
   <Form
     {...formItemLayout}
     form={form}

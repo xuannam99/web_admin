@@ -37,7 +37,9 @@ const Home = ({ history }) => {
   const [load, setLoad] = useState(false);
   const [visible, setVisible] = useState(false);
   const [visibleNoti, setVisibleNoti] = useState(false);
+  const [title,setTitle] = useState(true);
   const toggle = () => {
+    setTitle(!title);
     setCollapsed(!collapsed);
   };
   const checkIAuth=()=>{
@@ -97,9 +99,9 @@ const Home = ({ history }) => {
   return (
       <Layout style={{minHeight:'100vh'}}>
         <Sider trigger={null} collapsible collapsed={collapsed}>
-          <div className="logo" style={{ justifyContent: 'center', display: 'flex', alignItems: 'center' }}>
-            <h4 style={{ color: 'white' }}>TOEIC SEB</h4>
-          </div>
+          {title?<div className="logo" style={{ justifyContent: 'center', display: 'flex',  }}>
+            <h4 style={{ color: 'white',fontSize:20,textAlign:'center' }}>TOEIC SEB</h4>
+          </div>:null}
           <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
             <Menu.Item key="1" icon={<TeamOutlined />} onClick={() => {
               setIndex(1);

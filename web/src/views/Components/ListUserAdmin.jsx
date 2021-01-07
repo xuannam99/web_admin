@@ -117,7 +117,6 @@ export default function UploadData() {
   };
   // ok add admin
   const handleOk = (values) => {
-    
     signUp(values)
       .then(data => {
         if (data !== 'erro') {
@@ -210,7 +209,7 @@ export default function UploadData() {
           <div style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end', display: 'flex' }}>
             <Button onClick={
               showModal
-            }>Add admin</Button>
+            } type="primary" >Add admin</Button>
           </div>
         </div>
       </CardHeader>
