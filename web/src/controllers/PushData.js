@@ -1,5 +1,5 @@
 
-export const pushFile = ( data, name) => {
+export const pushFile = (data, name) => {
     return new Promise((resolve, reject) => {
         fetch(`https://toeic-seb-firebase.herokuapp.com/database/${name}/add`, {
             method: 'POST',
@@ -9,14 +9,14 @@ export const pushFile = ( data, name) => {
                 'Access-Control-Allow-Origin': "*",
                 mode: 'no-cors'
             },
-            body:data,
+            body: data,
         }).then((data) => {
             resolve(data.json());
         })
     });
 }
 
-export const updateFile = ( data, name) => {
+export const updateFile = (data, name) => {
     console.log(data)
     return new Promise((resolve, reject) => {
         fetch(`https://toeic-seb-firebase.herokuapp.com/database/${name}/update`, {
@@ -27,15 +27,16 @@ export const updateFile = ( data, name) => {
                 'Access-Control-Allow-Origin': "*",
                 mode: 'no-cors'
             },
-            body:data,
+            body: data,
         }).then((data) => {
             resolve(data.json());
         })
     });
 }
-export const removeData = ( data) => {
+export const removeData = (data) => {
+    console.log(typeof data.IDTest)
     return new Promise((resolve, reject) => {
-        fetch(`https://toeic-seb-firebase.herokuapp.com/database/test/delete`, {
+        fetch('https://toeic-seb-firebase.herokuapp.com/database/test/delete?IDTest='+data.IDTest+'&IDYear='+data.IDYear, {
             method: 'delete',
             headers: {
                 Accept: 'application/json, text/plain, */*',
@@ -43,11 +44,11 @@ export const removeData = ( data) => {
                 'Access-Control-Allow-Origin': "*",
                 mode: 'no-cors'
             },
-            body:JSON.stringify(
-                { 
-                    IDYear: data.IDYear, 
-                    IDTest: data.IDTest 
-                }),
+            // body: JSON.stringify(
+            //     {
+            //         IDYear: data.IDYear,
+            //         IDTest: data.IDTest
+            //     }),
         }).then((data) => {
             resolve(data.json());
         })

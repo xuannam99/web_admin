@@ -118,7 +118,7 @@ export default function UploadData(props) {
   const classes = useStyles();
   const [loadingEdit, setLoadingEdit] = React.useState(false);
   const [loadingDelete, setLoadingDelete] = React.useState(false);
-  
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectUpdate, setSelectUpdate] = React.useState(''); // select part current
   const [valueUpdate, setvalueUpdate] = React.useState('');
@@ -159,7 +159,7 @@ export default function UploadData(props) {
         <div style={{ width: 70, display: 'flex', paddingRight: 5 }}>
           <Button type="primary"
             onClick={() => {
-             
+
               setNameModal('Update Data');
               setVisibleEdit(true);
             }}
@@ -429,7 +429,7 @@ export default function UploadData(props) {
       notification.open(args);
     }
     setLoadingEdit(true);
-  
+
 
   };
   // cancel edit
@@ -437,31 +437,30 @@ export default function UploadData(props) {
     setVisibleEdit(false);
     setLoadingEdit(false);
   };
-  
-   // delete test
-   const handleOkDelete = async() => {
+
+  // delete test
+  const handleOkDelete = async () => {
     let res = [];
     setLoadingDelete(true);
     await removeData(valueUpdate)
-    .then(data => {
-      if (data.status) {
+      .then(data => {
         res.push({
           content: `Remove data test ${valueUpdate.IDTest} year ${valueUpdate.IDYear} success`,
           date: moment().format('YYYY/MM/DD'),
           status: true
         })
-      }
-      else {
+
+      }).catch(() => {
         res.push({
           content: `Remove data ${valueUpdate.IDTest} year ${valueUpdate.IDYear} fail`,
           date: moment().format('YYYY/MM/DD'),
-          status:false
+          status: false
         })
-      }
-    });
+      })
     setLoadingDelete(false);
-    setVisibleDelete(true);
+    setVisibleDelete(false);
     setDataNotification(res);
+    getData();
   };
   // cancel delete test
   const handleCancelDelete = () => {
@@ -530,7 +529,7 @@ export default function UploadData(props) {
               <Select
                 showSearch
                 style={{ width: 200 }}
-                placeholder="Select a person"
+                placeholder="Select"
                 optionFilterProp="children"
                 onChange={onChangeSelect}
                 // onFocus={onFocus}
