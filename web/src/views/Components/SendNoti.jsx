@@ -59,7 +59,7 @@ export default function Notification() {
     setIsModalVisible(true);
   };
   const sendMessage = (values) => {
-    fetch(`https://toeic-seb-firebase.herokuapp.com/sendmessage/send/package`, {
+    fetch(`${process.env.REACT_APP_API_URL}/sendmessage/send/package`, {
       method: 'POST',
       headers: {
         Accept: 'application/json, text/plain, */*',
@@ -95,7 +95,7 @@ export default function Notification() {
     })
   }
   const sendVoca = () => {
-    fetch(`https://toeic-seb-firebase.herokuapp.com/sendmessage/send/vocarandom`, {
+    fetch(`${process.env.REACT_APP_API_URL}/sendmessage/send/vocarandom`, {
       method: 'POST',
       headers: {
         Accept: 'application/json, text/plain, */*',

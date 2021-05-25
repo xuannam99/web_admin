@@ -32,7 +32,7 @@ export default function CustomTable(props) {
     setOpen(true);
   };
   const deleteUser = async () => {
-    return await fetch(`https://toeic-seb-firebase.herokuapp.com/users/disable/${value.id}`, {
+    return await fetch(`${process.env.REACT_APP_API_URL}/users/disable/${value.id}`, {
       method: 'PUT',
       headers: {
         Accept: 'application/json, text/plain, */*',
@@ -45,7 +45,7 @@ export default function CustomTable(props) {
     });
   }
   const enableUser = async () => {
-    return await fetch(`https://toeic-seb-firebase.herokuapp.com/users/enable/${value.id}`, {
+    return await fetch(`${process.env.REACT_APP_API_URL}/users/enable/${value.id}`, {
       method: 'PUT',
       headers: {
         Accept: 'application/json, text/plain, */*',

@@ -19,7 +19,7 @@ const Login = ({ history }) => {
 
   const sendGoogleToken = (tokenId) => {
     axios
-      .post(`${process.env.REACT_APP_API_URL}/admin/google`, {
+      .post(`${process.env.REACT_APP_API_URL_LOGIN}/admin/google`, {
         idToken: tokenId,
       })
       .then((res) => {
@@ -50,7 +50,7 @@ const Login = ({ history }) => {
 
   const sendFacebookToken = (accessToken) => {
     axios
-      .post(`${process.env.REACT_APP_API_URL}/admin/facebook`, {
+      .post(`${process.env.REACT_APP_API_URL_LOGIN}/admin/facebook`, {
         accessToken,
       })
       .then((res) => {
@@ -88,7 +88,7 @@ const Login = ({ history }) => {
     if (email && password1) {
       setFormData({ ...formData, textChange: 'Submitting' });
       axios
-        .post(`${process.env.REACT_APP_API_URL}/admin/login`, {
+        .post(`${process.env.REACT_APP_API_URL_LOGIN}/admin/login`, {
           email,
           password: password1,
         })

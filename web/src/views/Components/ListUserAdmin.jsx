@@ -64,7 +64,7 @@ export default function UploadData() {
 
   // get list admin
   const getData = async () => {
-    return await fetch(`https://toeic-seb.herokuapp.com/admin/`)
+    return await fetch(`${process.env.REACT_APP_API_URL_LOGIN}/admin/`)
       .then(response => response.json())
       .then(data => {
         let array = data.map(element => {
@@ -145,7 +145,7 @@ export default function UploadData() {
   // add admin
   const signUp = async (values) => {
     return new Promise((resolve, reject) => {
-      fetch(`https://toeic-seb.herokuapp.com/admin/register`, {
+      fetch(`${process.env.REACT_APP_API_URL_LOGIN}/admin/register`, {
         method: 'POST',
         headers: {
           Accept: 'application/json, text/plain, */*',
@@ -166,9 +166,9 @@ export default function UploadData() {
   }
   // api edit admin
   const editAdmin = async () => {
-    let query = `https://toeic-seb.herokuapp.com/admin/disable/${adminCurrent.id}`;
+    let query = `${process.env.REACT_APP_API_URL_LOGIN}/admin/disable/${adminCurrent.id}`;
     if(adminCurrent.status === "false"){
-      query = `https://toeic-seb.herokuapp.com/admin/enable/${adminCurrent.id}`;
+      query = `${process.env.REACT_APP_API_URL_LOGIN}/admin/enable/${adminCurrent.id}`;
     }
     return new Promise((resolve, reject) => {
       fetch(query, {

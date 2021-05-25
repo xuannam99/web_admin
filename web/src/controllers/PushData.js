@@ -1,7 +1,7 @@
 
 export const pushFile = (data, name) => {
     return new Promise((resolve, reject) => {
-        fetch(`https://toeic-seb-firebase.herokuapp.com/database/${name}/add`, {
+        fetch(`${process.env.REACT_APP_API_URL}/database/${name}/add`, {
             method: 'POST',
             headers: {
                 Accept: 'application/json, text/plain, */*',
@@ -19,7 +19,7 @@ export const pushFile = (data, name) => {
 export const updateFile = (data, name) => {
     console.log(data)
     return new Promise((resolve, reject) => {
-        fetch(`https://toeic-seb-firebase.herokuapp.com/database/${name}/update`, {
+        fetch(`${process.env.REACT_APP_API_URL}/database/${name}/update`, {
             method: 'PUT',
             headers: {
                 Accept: 'application/json, text/plain, */*',
@@ -36,7 +36,7 @@ export const updateFile = (data, name) => {
 export const removeData = (data) => {
     console.log(typeof data.IDTest)
     return new Promise((resolve, reject) => {
-        fetch('https://toeic-seb-firebase.herokuapp.com/database/test/delete?IDTest='+data.IDTest+'&IDYear='+data.IDYear, {
+        fetch('${process.env.REACT_APP_API_URL}/database/test/delete?IDTest='+data.IDTest+'&IDYear='+data.IDYear, {
             method: 'delete',
             headers: {
                 Accept: 'application/json, text/plain, */*',

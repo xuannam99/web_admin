@@ -175,7 +175,7 @@ export default function UploadData(props) {
 
   // get test
   const getData = async () => {
-    return await fetch(`https://toeic-seb-firebase.herokuapp.com/database/test/`)
+    return await fetch(`${process.env.REACT_APP_API_URL}/database/test/`)
       .then(response => response.json())
       .then(data => {
         let array = data.map(element => {
