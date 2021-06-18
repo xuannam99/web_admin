@@ -1,4 +1,3 @@
-
 export const pushFile = (data, name) => {
     return new Promise((resolve, reject) => {
         fetch(`${process.env.REACT_APP_API_URL}/database/${name}/add`, {
@@ -10,6 +9,23 @@ export const pushFile = (data, name) => {
                 mode: 'no-cors'
             },
             body: data,
+        }).then((data) => {
+            resolve(data.json());
+        })
+    });
+}
+export const pushOnlinePractice = (data) => {
+    console.log("======>"+JSON.stringify(data));
+    return new Promise((resolve, reject) => {
+        fetch(`${process.env.REACT_APP_API_URL}/practiceonline/data`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': "*",
+                mode: 'no-cors'
+            },
+            body: JSON.stringify(data),
         }).then((data) => {
             resolve(data.json());
         })
@@ -36,7 +52,7 @@ export const updateFile = (data, name) => {
 export const removeData = (data) => {
     console.log(typeof data.IDTest)
     return new Promise((resolve, reject) => {
-        fetch('${process.env.REACT_APP_API_URL}/database/test/delete?IDTest='+data.IDTest+'&IDYear='+data.IDYear, {
+        fetch(`${process.env.REACT_APP_API_URL}/database/test/delete?IDTest=` + data.IDTest + `&IDYear=` + data.IDYear, {
             method: 'delete',
             headers: {
                 Accept: 'application/json, text/plain, */*',
@@ -49,6 +65,23 @@ export const removeData = (data) => {
             //         IDYear: data.IDYear,
             //         IDTest: data.IDTest
             //     }),
+        }).then((data) => {
+            resolve(data.json());
+        })
+    });
+}
+
+export const removeDataOnline = (data) => {
+    console.log(typeof data.IDTest)
+    return new Promise((resolve, reject) => {
+        fetch(`${process.env.REACT_APP_API_URL}/practiceonline/data?IDData=` + data.IDData, {
+            method: 'delete',
+            headers: {
+                Accept: 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': "*",
+                mode: 'no-cors'
+            },
         }).then((data) => {
             resolve(data.json());
         })

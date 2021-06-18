@@ -118,7 +118,7 @@ export default function Notification() {
         progress: undefined,
       });
     }).catch((err) => {
-      console.log('????',err + '')
+      console.log('????', err + '')
       toast.error('Đã xãy ra lỗi!', {
         position: "top-right",
         autoClose: 5000,
@@ -258,7 +258,7 @@ export default function Notification() {
             <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 3 }}>
               <Button type="primary" htmlType="submit">
                 Submit
-        </Button>
+              </Button>
             </Form.Item>
           </Form>
         </Modal>

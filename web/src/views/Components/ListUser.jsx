@@ -64,8 +64,8 @@ export default function ListUser() {
                         name: element.displayName,
                         email: element.email,
                         disabled: element.disabled,
-                        expirationDate: element.expirationDate,
-                        package: element.package,
+                        // expirationDate: element.expirationDate,
+                        // package: element.package,
                     }
                 })
                 setData(array);
@@ -93,7 +93,7 @@ export default function ListUser() {
                     <CardBody>
                         {data.length>0? <Table
                             tableHeaderColor="primary"
-                            tableHead={['id', 'name', 'email', 'disabled', 'expiration', 'package']}
+                            tableHead={['id', 'name', 'email', 'disabled']}
                             tableData={data}
                             reaLoad={reaLoad}
                         />:<Empty />}

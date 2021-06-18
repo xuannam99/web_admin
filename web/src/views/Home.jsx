@@ -20,6 +20,7 @@ import { isAuth, getCookie, signout } from '../controllers/localStorage';
 import axios from 'axios';
 // view updata
 import UpData from './Components/UploadData';
+import Practice from './Components/PracticeOnline';
 // view list user
 import ListUser from './Components/ListUser';
 // view list user admin
@@ -37,19 +38,19 @@ const Home = ({ history }) => {
   const [load, setLoad] = useState(false);
   const [visible, setVisible] = useState(false);
   const [visibleNoti, setVisibleNoti] = useState(false);
-  const [title,setTitle] = useState(true);
+  const [title, setTitle] = useState(true);
   const toggle = () => {
     setTitle(!title);
     setCollapsed(!collapsed);
   };
-  const checkIAuth=()=>{
-    if(!isAuth()){
+  const checkIAuth = () => {
+    if (!isAuth()) {
       history.push('/Login')
     }
   }
-  useEffect(()=>{
+  useEffect(() => {
     checkIAuth();
-  },[])
+  }, [])
   // logout
   const Logout = () => {
     signout(() => {
@@ -97,93 +98,100 @@ const Home = ({ history }) => {
     )
   }
   return (
-      <Layout style={{minHeight:'100vh'}}>
-        <Sider trigger={null} collapsible collapsed={collapsed}>
-          {title?<div className="logo" style={{ justifyContent: 'center', display: 'flex',  }}>
-            <h4 style={{ color: 'white',fontSize:20,textAlign:'center' }}>TOEIC SEB</h4>
-          </div>:null}
-          <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
-            <Menu.Item key="1" icon={<TeamOutlined />} onClick={() => {
-              setIndex(1);
-              checkIAuth();
-            }} >
-              Admin
+    <Layout style={{ minHeight: '100vh' }}>
+      <Sider trigger={null} collapsible collapsed={collapsed}>
+        {title ? <div className="logo" style={{ justifyContent: 'center', display: 'flex', }}>
+          <h4 style={{ color: 'white', fontSize: 20, textAlign: 'center' }}>TOEIC SEB</h4>
+        </div> : null}
+        <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
+          <Menu.Item key="1" icon={<TeamOutlined />} onClick={() => {
+            setIndex(1);
+            checkIAuth();
+          }} >
+            Admin
             </Menu.Item>
-            <Menu.Item key="2" icon={<UsergroupAddOutlined />} onClick={() => {
-              setIndex(2);
-              checkIAuth();
-            }}>
-              User
+          <Menu.Item key="2" icon={<TeamOutlined />} onClick={() => {
+            setIndex(2);
+            checkIAuth();
+          }} >
+            Practice Online
             </Menu.Item>
-            <Menu.Item key="3" icon={<UploadOutlined />} onClick={() => {
-              setIndex(3);
-              checkIAuth();
-            }}>
-              Data
+          <Menu.Item key="3" icon={<UsergroupAddOutlined />} onClick={() => {
+            setIndex(3);
+            checkIAuth();
+          }}>
+            User
             </Menu.Item>
-            <Menu.Item key="4" icon={<NotificationOutlined />} onClick={() => {
-              setIndex(4);
-              checkIAuth();
-            }}>
-              Send notification
+          <Menu.Item key="4" icon={<UploadOutlined />} onClick={() => {
+            setIndex(4);
+            checkIAuth();
+          }}>
+            Data
             </Menu.Item>
-            <Menu.Item key="5" icon={<ProfileOutlined />} onClick={() => {
-              setIndex(5);
-              checkIAuth();
-            }}>
-              Profile
+          <Menu.Item key="5" icon={<NotificationOutlined />} onClick={() => {
+            setIndex(5);
+            checkIAuth();
+          }}>
+            Send notification
             </Menu.Item>
-          </Menu>
-        </Sider>
-        <Layout className="site-layout">
-          <Header className="site-layout-background" style={{ padding: 0, display: 'flex' }}>
-            {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-              className: 'trigger',
-              onClick: toggle,
-            })}
-            <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', paddingRight: 30, marginLeft: 20 }}>
-              <div style={{ width: 100, display: 'flex' }}>
-                <div style={{ width: 150, flex: 1 }}>
-                  <Popover
-                    placement="leftTop"
-                    content={
-                      viewNoti
-                    }
-                    title="All notification"
-                    trigger="click"
-                    visible={visibleNoti}
-                    onVisibleChange={handleVisibleChangeNoti}
-                  >
-                    <Badge count={amountNoti}>
-                      <Avatar icon={<BellOutlined />} />
-                    </Badge>
-                  </Popover>
-                </div>
-                <div style={{ width: 100, flex: 1 }}>
-                  <Popover
-                    content={<a onClick={Logout}>Logout</a>}
-                    title="Option"
-                    trigger="click"
-                    visible={visible}
-                    onVisibleChange={handleVisibleChange}
-                  >
-                    <Avatar icon={<UserOutlined />} />
-                  </Popover>
-                </div>
+          <Menu.Item key="6" icon={<ProfileOutlined />} onClick={() => {
+            setIndex(6);
+            checkIAuth();
+          }}>
+            Profile
+            </Menu.Item>
+        </Menu>
+      </Sider>
+      <Layout className="site-layout">
+        <Header className="site-layout-background" style={{ padding: 0, display: 'flex' }}>
+          {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
+            className: 'trigger',
+            onClick: toggle,
+          })}
+          <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', paddingRight: 30, marginLeft: 20 }}>
+            <div style={{ width: 100, display: 'flex' }}>
+              <div style={{ width: 150, flex: 1 }}>
+                <Popover
+                  placement="leftTop"
+                  content={
+                    viewNoti
+                  }
+                  title="All notification"
+                  trigger="click"
+                  visible={visibleNoti}
+                  onVisibleChange={handleVisibleChangeNoti}
+                >
+                  <Badge count={amountNoti}>
+                    <Avatar icon={<BellOutlined />} />
+                  </Badge>
+                </Popover>
+              </div>
+              <div style={{ width: 100, flex: 1 }}>
+                <Popover
+                  content={<a onClick={Logout}>Logout</a>}
+                  title="Option"
+                  trigger="click"
+                  visible={visible}
+                  onVisibleChange={handleVisibleChange}
+                >
+                  <Avatar icon={<UserOutlined />} />
+                </Popover>
               </div>
             </div>
-          </Header>
-          <div style={{ padding: 10 }}>
-            {
-              index === 1 ? <ListUserAdmin />
-                : index === 2 ? <ListUser />
-                  : index === 3 ? <UpData setDataNotification={(setDataNotification)} />
-                    : index === 4 ? <Notification></Notification>
-                      : <Profile/>
-            }
           </div>
-        </Layout>
+        </Header>
+        <div style={{ padding: 10 }}>
+          {
+            index === 1 ? <ListUserAdmin />
+              : index === 2 ? <Practice setDataNotification={(setDataNotification)} />
+                : index === 3 ? <ListUser />
+                  : index === 4 ? <UpData setDataNotification={(setDataNotification)} />
+                    : index === 5 ? <Notification></Notification>
+                      : <Profile />
+          }
+        </div>
       </Layout>
+    </Layout>
   );
 }
 export default Home
