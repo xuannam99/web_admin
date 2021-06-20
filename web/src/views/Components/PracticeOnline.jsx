@@ -582,8 +582,8 @@ export default function PracticeOnline(props) {
             ]}>
               <DatePicker
                 format="YYYY-MM-DD HH:mm:ss"
-                disabledDate={disabledDate}
-                disabledTime={disabledDateTime}
+                // disabledDate={disabledDate}
+                // disabledTime={disabledDateTime}
                 showTime={{ defaultValue: moment('00:00:00', 'HH:mm:ss') }}
               />
             </Form.Item>
@@ -648,7 +648,7 @@ export default function PracticeOnline(props) {
           title="Thông báo"
           visible={visibleDelete}
           onOk={handleOkDelete}
-          confirmLoading={loadingDelete}
+          // confirmLoading={loadingDelete}
           onCancel={handleCancelDelete}
         >
           <p>Bạn có chắc chắn muốn xóa đề {valueUpdate.IDData} không?</p>
