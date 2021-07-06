@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { getCookie } from '../../controllers/localStorage';
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
@@ -175,7 +176,16 @@ export default function UploadData(props) {
 
   // get test
   const getData = async () => {
-    return await fetch(`${process.env.REACT_APP_API_URL}/database/test/`)
+    const HEADER = {
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': "*",
+        mode: 'no-cors',
+        authorization: getCookie().token,
+      },
+    };
+    return await fetch(`${process.env.REACT_APP_API_URL}/database/test/`, HEADER)
       .then(response => response.json())
       .then(data => {
         let array = data.map(element => {

@@ -5,6 +5,7 @@ import { authenticate, isAuth } from '../../controllers/localStorage';
 import { Link, Redirect } from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
+import { firebase } from '../../firebase/firebase-confix';
 // login
 const Login = ({ history }) => {
   const [formData, setFormData] = useState({
@@ -17,10 +18,70 @@ const Login = ({ history }) => {
     setFormData({ ...formData, [text]: e.target.value });
   };
 
-  const sendGoogleToken = (tokenId) => {
+  const sendGoogleToken = (tokenId, accessToken) => {
+    const googleCredential = firebase.auth.GoogleAuthProvider.credential(tokenId, accessToken);
+    firebase.auth().signInWithCredential(googleCredential).then(credential=>{
+      console.log('creds', credential.user);
+      firebase.auth().currentUser.getIdToken(true).then(function (idToken) {
+        var res = {
+          data: {
+            success: true,
+            message: 'Login success!',
+            token: idToken,
+            user: {
+              _id: credential.user.uid,
+              name: credential.user.displayName,
+              email: credential.user.email
+            },
+          }
+        }
+        informParent(res);
+        history.push('/home');
+        toast.success(`Welcome!! ${credential.user.displayName}`);
+      }).catch(function (error) {
+        console.log(error);
+        toast.success(`Error! ${error.message}`);
+      });
+    }).catch(error=>{
+      console.log(error);
+      toast.success(`Error! ${error.message}`);
+    })
+    // axios
+    //   .post(`${process.env.REACT_APP_API_URL_LOGIN}/admin/google`, {
+    //     idToken: tokenId,
+    //   })
+    //   .then((res) => {
+    //     // kiem tra tai khoan
+    //     if (res.data.user.status === true) {
+    //       informParent(res);
+    //     } else {
+    //       toast.error('Tài khoản này chưa có quyền truy cập. Vui lòng liên hệ admin đề mở khóa tài khoản!', {
+    //         position: "top-right",
+    //         autoClose: 5000,
+    //         hideProgressBar: false,
+    //         closeOnClick: true,
+    //         pauseOnHover: true,
+    //         draggable: true,
+    //         progress: undefined,
+    //       });
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log('GOOGLE SIGNIN ERROR', error.response);
+    //   });
+  };
+  const informParent = (response) => {
+    authenticate(response, () => {
+      history.push('/home');
+    });
+  };
+
+  const sendFacebookToken = (accessToken) => {
+
+
     axios
-      .post(`${process.env.REACT_APP_API_URL_LOGIN}/admin/google`, {
-        idToken: tokenId,
+      .post(`${process.env.REACT_APP_API_URL_LOGIN}/admin/facebook`, {
+        accessToken,
       })
       .then((res) => {
         // kiem tra tai khoan
@@ -39,43 +100,18 @@ const Login = ({ history }) => {
         }
       })
       .catch((error) => {
-        console.log('GOOGLE SIGNIN ERROR', error.response);
-      });
-  };
-  const informParent = (response) => {
-    authenticate(response, () => {
-      history.push('/home');
-    });
-  };
-
-  const sendFacebookToken = (accessToken) => {
-    axios
-      .post(`${process.env.REACT_APP_API_URL_LOGIN}/admin/facebook`, {
-        accessToken,
-      })
-      .then((res) => {
-         // kiem tra tai khoan
-         if (res.data.user.status === true) {
-          informParent(res);
-        } else {
-          toast.error('Tài khoản này chưa có quyền truy cập. Vui lòng liên hệ admin đề mở khóa tài khoản!', {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-        }
-      })
-      .catch((error) => {
         console.log('FACEBOOK SIGNIN ERROR', error.response);
       });
   };
-  const responseGoogle = (response) => {
-    console.log(response);
-    sendGoogleToken(response.tokenId);
+  const responseGoogle = async (response) => {
+    var email = response.profileObj.email;
+    await firebase.firestore().collection('admin').where('email', '==', email).get().then(data=>{
+      if(data.size>0){
+        sendGoogleToken(response.tokenId, response.accessToken);
+      }else{
+        toast.success(`Email sử dụng cho tài khoản Google này chưa được đăng ký`);
+      }
+    }) 
   };
   const responseFacebook = (response) => {
     console.log(response);
@@ -87,33 +123,62 @@ const Login = ({ history }) => {
     e.preventDefault();
     if (email && password1) {
       setFormData({ ...formData, textChange: 'Submitting' });
-      axios
-        .post(`${process.env.REACT_APP_API_URL_LOGIN}/admin/login`, {
-          email,
-          password: password1,
-        })
-        .then((res) => {
-          authenticate(res, () => {
-            setFormData({
-              ...formData,
-              email: '',
-              password1: '',
-              textChange: 'Submitted',
-            });
+      firebase.auth().signInWithEmailAndPassword(email, password1)
+        .then((userCredential) => {
+          console.log(userCredential);
+          firebase.auth().currentUser.getIdToken(true).then(function (idToken) {
+            var res = {
+              data: {
+                success: true,
+                message: 'Login success!',
+                token: idToken,
+                user: {
+                  _id: userCredential.user.uid,
+                  name: userCredential.user.displayName,
+                  email: userCredential.user.email
+                },
+
+              }
+            }
+            informParent(res);
             history.push('/home');
-            toast.success(`Welcome  ${res.data.user.name}!!`);
+            toast.success(`Welcome!! ${userCredential.user.email}`);
+          }).catch(function (error) {
+            console.log('error');
           });
+
         })
-        .catch((err) => {
-          setFormData({
-            ...formData,
-            email: '',
-            password1: '',
-            textChange: 'Sign In',
-          });
-          // console.log(err.response);
-          toast.error(err.response.data.message);
+        .catch((error) => {
+          var errorMessage = error.message;
+          console.log(errorMessage);
         });
+      // axios
+      //   .post(`${process.env.REACT_APP_API_URL_LOGIN}/admin/login`, {
+      //     email,
+      //     password: password1,
+      //   })
+      //   .then((res) => {
+      //     authenticate(res, () => {
+      //       setFormData({
+      //         ...formData,
+      //         email: '',
+      //         password1: '',
+      //         textChange: 'Submitted',
+      //       });
+      //       history.push('/home');
+      //       toast.success(`Welcome  ${res.data.user.name}!!`);
+      //     });
+      //   })
+      //   .catch((err) => {
+      //     setFormData({
+      //       ...formData,
+      //       email: '',
+      //       password1: '',
+      //       textChange: 'Sign In',
+      //     });
+      //     // console.log(err.response);
+      //     toast.error(err.response.data.message);
+      //   });
     } else {
       toast.error('Please fill all fields');
     }

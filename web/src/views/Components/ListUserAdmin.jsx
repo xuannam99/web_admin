@@ -7,6 +7,8 @@ import CardHeader from "./Card/CardHeader.jsx";
 import CardBody from "./Card/CardBody.jsx";
 import "antd/dist/antd.css";
 import { Table, Tag, Space, Button, Modal, notification } from "antd";
+import axios from 'axios';
+import { getCookie } from '../../controllers/localStorage';
 
 import AddAdminForm from './AddAdminForm';
 const styles = {
@@ -64,19 +66,27 @@ export default function UploadData() {
 
   // get list admin
   const getData = async () => {
-    return await fetch(`${process.env.REACT_APP_API_URL_LOGIN}/admin/`)
+    const HEADER = {
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': "*",
+        mode: 'no-cors',
+        authorization: getCookie().token,
+      },
+    };
+    console.log('=====>',getCookie().token);
+    return await fetch(`${process.env.REACT_APP_API_URL}/users/admin`, HEADER)
       .then(response => response.json())
       .then(data => {
         let array = data.map(element => {
           return {
-            id: element._id,
-            name: element.name,
+            id: element.id,
+            name: element.displayName,
             email: element.email,
-            status: element['status']?.toString(),
-            role: element.role,
+            status: element.status?.toString(),
           }
         })
-     
         setData(array);
       });
   }
@@ -95,11 +105,6 @@ export default function UploadData() {
       title: "Email",
       dataIndex: "email",
       key: "email"
-    },
-    {
-      title: "Role",
-      dataIndex: "role",
-      key: "role"
     },
     {
       title: "Status",
@@ -145,14 +150,16 @@ export default function UploadData() {
   // add admin
   const signUp = async (values) => {
     return new Promise((resolve, reject) => {
-      fetch(`${process.env.REACT_APP_API_URL_LOGIN}/admin/register`, {
-        method: 'POST',
-        headers: {
+      const HEADER = {   
           Accept: 'application/json, text/plain, */*',
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': "*",
-          mode: 'no-cors'
-        },
+          mode: 'no-cors',
+          authorization: getCookie().token,
+      };
+      fetch(`${process.env.REACT_APP_API_URL_HOST}/users/admin`, {
+        method: 'POST',
+        headers: HEADER,
         body: JSON.stringify({
           username: values.username,
           email: values.email,
@@ -166,9 +173,9 @@ export default function UploadData() {
   }
   // api edit admin
   const editAdmin = async () => {
-    let query = `${process.env.REACT_APP_API_URL_LOGIN}/admin/disable/${adminCurrent.id}`;
-    if(adminCurrent.status === "false"){
-      query = `${process.env.REACT_APP_API_URL_LOGIN}/admin/enable/${adminCurrent.id}`;
+    let query = `${process.env.REACT_APP_API_URL}/users/admin_disable/${adminCurrent.id}`;
+    if(adminCurrent.status ==='false'){
+      query = `${process.env.REACT_APP_API_URL}/users/admin_enable/${adminCurrent.id}`;
     }
     return new Promise((resolve, reject) => {
       fetch(query, {
@@ -177,7 +184,8 @@ export default function UploadData() {
           Accept: 'application/json, text/plain, */*',
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': "*",
-          mode: 'no-cors'
+          mode: 'no-cors',
+          authorization: getCookie().token,
         },
         body: JSON.stringify({
         }),

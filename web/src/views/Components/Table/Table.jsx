@@ -17,11 +17,12 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { element } from "prop-types";
+import { getCookie } from '../../../controllers/localStorage';
 
 const useStyles = makeStyles(styles);
 export default function CustomTable(props) {
   const classes = useStyles();
-  const { tableHead, tableData, tableHeaderColor,reaLoad } = props;
+  const { tableHead, tableData, tableHeaderColor, reaLoad } = props;
   const [data, setData] = React.useState([]);;
   const [open, setOpen] = React.useState(false);  // open dialog
   const [id, setID] = React.useState('');  // id user
@@ -31,15 +32,17 @@ export default function CustomTable(props) {
     setID(item[0]);
     setOpen(true);
   };
+  const HEADER = {
+    Accept: 'application/json, text/plain, */*',
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': "*",
+    mode: 'no-cors',
+    authorization: getCookie().token,
+  };
   const deleteUser = async () => {
     return await fetch(`${process.env.REACT_APP_API_URL}/users/disable/${value.id}`, {
       method: 'PUT',
-      headers: {
-        Accept: 'application/json, text/plain, */*',
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': "*",
-        mode: 'no-cors'
-      },
+      headers: HEADER,
     }).then(() => {
       reaLoad();
     });
@@ -47,12 +50,7 @@ export default function CustomTable(props) {
   const enableUser = async () => {
     return await fetch(`${process.env.REACT_APP_API_URL}/users/enable/${value.id}`, {
       method: 'PUT',
-      headers: {
-        Accept: 'application/json, text/plain, */*',
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': "*",
-        mode: 'no-cors'
-      },
+      headers: HEADER,
     }).then(() => {
       reaLoad();
     });
@@ -62,9 +60,9 @@ export default function CustomTable(props) {
   };
   const handleAgree = () => {
     //console.log(value.id);
-    if(value.disabled){
-      enableUser();
-    }else deleteUser();
+    if (value.status) {
+      deleteUser();
+    } else enableUser();
     setOpen(false);
   }
   useEffect(() => {
@@ -74,7 +72,7 @@ export default function CustomTable(props) {
   }, [tableData])
   return (
     <div className={classes.tableResponsive}>
-      
+
       <Dialog // dialog
         open={open}
         onClose={handleClose}
@@ -135,10 +133,10 @@ export default function CustomTable(props) {
                   );
                 })}
                 <div>
-                 
-                  <TableCell style={{color:'red'}}
+
+                  <TableCell style={{ color: 'red' }}
                     onClick={() => handleClickOpen(prop)}>
-                    {prop.disabled ?  'enable' : 'disable'}
+                    {prop.status ? 'disable' : 'enable'}
                   </TableCell>
                 </div>
               </TableRow>

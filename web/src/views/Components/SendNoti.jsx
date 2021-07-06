@@ -8,6 +8,8 @@ import CardBody from "./Card/CardBody.jsx";
 import "antd/dist/antd.css";
 import { Form, Input, Button, Modal } from "antd";
 import { ToastContainer, toast } from 'react-toastify';
+import { getCookie } from '../../controllers/localStorage';
+import axios from 'axios';
 const styles = {
   typo: {
     paddingLeft: "25%",
@@ -52,21 +54,24 @@ export default function Notification() {
 
   const packageBuy = ['orange', 'red', 'blue', 'purple'];
 
+  const HEADER = {
+    Accept: 'application/json, text/plain, */*',
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': "*",
+    mode: 'no-cors',
+    Authorization: getCookie().token,
+  }
   const handleCancel = () => {
     setIsModalVisible(false);
   };
   const showModal = () => {
     setIsModalVisible(true);
   };
+
   const sendMessage = (values) => {
     fetch(`${process.env.REACT_APP_API_URL}/sendmessage/send/package`, {
       method: 'POST',
-      headers: {
-        Accept: 'application/json, text/plain, */*',
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': "*",
-        mode: 'no-cors'
-      },
+      headers: HEADER,
       body: JSON.stringify({
         title: values.Title,
         text: values.Content,
@@ -97,12 +102,7 @@ export default function Notification() {
   const sendVoca = () => {
     fetch(`${process.env.REACT_APP_API_URL}/sendmessage/send/vocarandom`, {
       method: 'POST',
-      headers: {
-        Accept: 'application/json, text/plain, */*',
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': "*",
-        mode: 'no-cors'
-      },
+      headers: HEADER,
       body: JSON.stringify({
         title: 'values.Title',
         text: 'values.Content',

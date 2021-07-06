@@ -9,6 +9,7 @@ import CardBody from "./Card/CardBody.jsx";
 import TableBody from "@material-ui/core/TableBody";
 // antd library
 import { Tag, Space, Button, Modal,Empty } from "antd";
+import { getCookie } from '../../controllers/localStorage';
 
 const styles = {
     cardCategoryWhite: {
@@ -55,7 +56,16 @@ export default function ListUser() {
     }
     // get list user
     const getData = async () => {
-        return await fetch(`${process.env.REACT_APP_API_URL}/users/`)
+        const HEADER = {
+            headers: {
+              Accept: 'application/json, text/plain, */*',
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': "*",
+              mode: 'no-cors',
+              authorization: getCookie().token,
+            },
+          };
+        return await fetch(`${process.env.REACT_APP_API_URL}/users/`, HEADER)
             .then(response => response.json())
             .then(data => {
                 let array = data.map(element => {
@@ -63,7 +73,7 @@ export default function ListUser() {
                         id: element.uid,
                         name: element.displayName,
                         email: element.email,
-                        disabled: element.disabled,
+                        status: element.islogin,
                         // expirationDate: element.expirationDate,
                         // package: element.package,
                     }
