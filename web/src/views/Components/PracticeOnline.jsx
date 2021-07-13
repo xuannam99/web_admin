@@ -181,30 +181,30 @@ export default function PracticeOnline(props) {
     return await fetch(`${process.env.REACT_APP_API_URL}/practiceonline/list`, HEADER)
       .then(response => response.json())
       .then(data => {
-        let array = data.map(element => {
-          var date = new Date(element.time);
-          var d = new Date();
-          var n = d.getTime();
-          var status = '---';
-          if (element.time > n + 7200000) {
-            status = 'comming';
-          } else if (element.time + 7200000 - n >= 0) {
-            status = 'just now';
-          } else {
-            status = 'closed';
-          }
-          return {
-            IDData: element.idData,
-            Buy: element.Buy,
-            status: status,
-            Date: date.toLocaleDateString(),
-            Title: element.title,
-          }
-        })
-        array.sort(function (a, b) {
-          return a.IDTest - b.IDTest;
-        });
-        setData(array);
+          let array = data.data?.map(element => {
+            var date = new Date(element.time);
+            var d = new Date();
+            var n = d.getTime();
+            var status = '---';
+            if (element.time > n + 7200000) {
+              status = 'comming';
+            } else if (element.time + 7200000 - n >= 0) {
+              status = 'just now';
+            } else {
+              status = 'closed';
+            }
+            return {
+              IDData: element.idData,
+              Buy: element.Buy,
+              status: status,
+              Date: date.toLocaleDateString(),
+              Title: element.title,
+            }
+          })
+          array.sort(function (a, b) {
+            return a.IDTest - b.IDTest;
+          });
+          setData(array); 
       });
   }
   // name and data post database

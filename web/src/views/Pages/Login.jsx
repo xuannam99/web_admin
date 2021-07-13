@@ -20,7 +20,7 @@ const Login = ({ history }) => {
 
   const sendGoogleToken = (tokenId, accessToken) => {
     const googleCredential = firebase.auth.GoogleAuthProvider.credential(tokenId, accessToken);
-    firebase.auth().signInWithCredential(googleCredential).then(credential=>{
+    firebase.auth().signInWithCredential(googleCredential).then(credential => {
       console.log('creds', credential.user);
       firebase.auth().currentUser.getIdToken(true).then(function (idToken) {
         var res = {
@@ -36,39 +36,16 @@ const Login = ({ history }) => {
           }
         }
         informParent(res);
-        history.push('/home');
         toast.success(`Welcome!! ${credential.user.displayName}`);
+        history.push('/home');
       }).catch(function (error) {
         console.log(error);
         toast.success(`Error! ${error.message}`);
       });
-    }).catch(error=>{
+    }).catch(error => {
       console.log(error);
       toast.success(`Error! ${error.message}`);
     })
-    // axios
-    //   .post(`${process.env.REACT_APP_API_URL_LOGIN}/admin/google`, {
-    //     idToken: tokenId,
-    //   })
-    //   .then((res) => {
-    //     // kiem tra tai khoan
-    //     if (res.data.user.status === true) {
-    //       informParent(res);
-    //     } else {
-    //       toast.error('Tài khoản này chưa có quyền truy cập. Vui lòng liên hệ admin đề mở khóa tài khoản!', {
-    //         position: "top-right",
-    //         autoClose: 5000,
-    //         hideProgressBar: false,
-    //         closeOnClick: true,
-    //         pauseOnHover: true,
-    //         draggable: true,
-    //         progress: undefined,
-    //       });
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log('GOOGLE SIGNIN ERROR', error.response);
-    //   });
   };
   const informParent = (response) => {
     authenticate(response, () => {
@@ -77,41 +54,43 @@ const Login = ({ history }) => {
   };
 
   const sendFacebookToken = (accessToken) => {
-
-
-    axios
-      .post(`${process.env.REACT_APP_API_URL_LOGIN}/admin/facebook`, {
-        accessToken,
-      })
-      .then((res) => {
-        // kiem tra tai khoan
-        if (res.data.user.status === true) {
-          informParent(res);
-        } else {
-          toast.error('Tài khoản này chưa có quyền truy cập. Vui lòng liên hệ admin đề mở khóa tài khoản!', {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
+    const facebookCredential = firebase.auth.FacebookAuthProvider.credential(accessToken);
+    firebase.auth().signInWithCredential(facebookCredential).then(credential => {
+      console.log('creds', credential.user);
+      firebase.auth().currentUser.getIdToken(true).then(function (idToken) {
+        var res = {
+          data: {
+            success: true,
+            message: 'Login success!',
+            token: idToken,
+            user: {
+              _id: credential.user.uid,
+              name: credential.user.displayName,
+              email: credential.user.email
+            },
+          }
         }
-      })
-      .catch((error) => {
-        console.log('FACEBOOK SIGNIN ERROR', error.response);
+        informParent(res);
+        toast.success(`Welcome!! ${credential.user.displayName}`);
+        history.push('/home');
+      }).catch(function (error) {
+        console.log(error);
+        toast.success(`Error! ${error.message}`);
       });
+    }).catch(error => {
+      console.log(error);
+      toast.success(`Error! ${error.message}`);
+    })
   };
   const responseGoogle = async (response) => {
     var email = response.profileObj.email;
-    await firebase.firestore().collection('admin').where('email', '==', email).get().then(data=>{
-      if(data.size>0){
+    await firebase.firestore().collection('admin').where('email', '==', email).get().then(data => {
+      if (data.size > 0) {
         sendGoogleToken(response.tokenId, response.accessToken);
-      }else{
+      } else {
         toast.success(`Email sử dụng cho tài khoản Google này chưa được đăng ký`);
       }
-    }) 
+    })
   };
   const responseFacebook = (response) => {
     console.log(response);
@@ -242,7 +221,7 @@ const Login = ({ history }) => {
                 <GoogleLogin
                   clientId={`${process.env.REACT_APP_GOOGLE_CLIENT}`}
                   onSuccess={responseGoogle}
-                  onFailure={responseGoogle}
+                  // onFailure={responseGoogle}
                   cookiePolicy={'single_host_origin'}
                   render={(renderProps) => (
                     <button

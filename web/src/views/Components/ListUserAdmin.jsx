@@ -8,7 +8,7 @@ import CardBody from "./Card/CardBody.jsx";
 import "antd/dist/antd.css";
 import { Table, Tag, Space, Button, Modal, notification } from "antd";
 import axios from 'axios';
-import { getCookie } from '../../controllers/localStorage';
+import { getCookie, signout1 } from '../../controllers/localStorage';
 
 import AddAdminForm from './AddAdminForm';
 const styles = {
@@ -78,16 +78,22 @@ export default function UploadData() {
     console.log('=====>',getCookie().token);
     return await fetch(`${process.env.REACT_APP_API_URL}/users/admin`, HEADER)
       .then(response => response.json())
-      .then(data => {
-        let array = data.map(element => {
-          return {
-            id: element.id,
-            name: element.displayName,
-            email: element.email,
-            status: element.status?.toString(),
-          }
-        })
-        setData(array);
+      .then(dataget => {
+        console.log('sdasdasdasd--->', dataget);
+        if(dataget.status){
+          let array = dataget.data.map(element => {
+            return {
+              id: element.id,
+              name: element.displayName,
+              email: element.email,
+              status: element.status?.toString(),
+            }
+          })
+          setData(array);
+        }else{
+          signout1();
+        }
+        
       });
   }
   const columns = [

@@ -19,7 +19,7 @@ export const pushFile = (data, name) => {
     });
 }
 export const pushOnlinePractice = (data) => {
-    console.log("======>" + JSON.stringify(data));
+    // console.log("======>" + JSON.stringify(data));
     return new Promise((resolve, reject) => {
         fetch(`${process.env.REACT_APP_API_URL}/practiceonline/data`, {
             method: 'POST',
@@ -32,7 +32,7 @@ export const pushOnlinePractice = (data) => {
 }
 
 export const updateFile = (data, name) => {
-    console.log(data)
+    // console.log(data)
     return new Promise((resolve, reject) => {
         fetch(`${process.env.REACT_APP_API_URL}/database/${name}/update`, {
             method: 'PUT',

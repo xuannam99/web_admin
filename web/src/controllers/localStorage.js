@@ -77,6 +77,13 @@ export const signout = (next) => {
   })
 
 };
+export const signout1 = (next) => {
+  firebase.auth().signOut().then(()=>{
+    removeCookie("token");
+    removeLocalStorage("user");
+  })
+
+};
 export const updateUser = (response, next) => {
   console.log("UPDATE USER IN LOCAL STORAGE HELPERS", response);
   if (typeof window !== "undefined") {

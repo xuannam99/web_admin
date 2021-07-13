@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import authSvg from "../../assests/forget.svg";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
-
+import { firebase } from '../../firebase/firebase-confix';
 const ForgetPassword = ({ history }) => {
   const [formData, setFormData] = useState({
     email: "",
   });
+  const [isFirst, setIsFirst] = useState(true);
 
   const { email } = formData;
 
@@ -15,27 +16,24 @@ const ForgetPassword = ({ history }) => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    if (email) {
-      setFormData({ ...formData, textChange: "Submitting" });
-      axios
-        .put(`${process.env.REACT_APP_API_URL}/forgotpassword`, {
-          email,
+    if(isFirst){
+      e.preventDefault();
+      if (email) {
+        setFormData({ ...formData, textChange: "Submitting" });
+        firebase.auth().sendPasswordResetEmail(email).then(() => {
+          toast.success(`Please check your email!`);
+          setIsFirst(false);
+        }).catch(error => {
+          console.log(error.message);
+          toast.success(error.message);
         })
-        .then((res) => {
-          setFormData({
-            ...formData,
-            email: "",
-          });
-          toast.success(`Please check your email`);
-        })
-        .catch((err) => {
-          console.log(err.response);
-          toast.error(err.response.data.error);
-        });
-    } else {
-      toast.error("Please fill all fields");
+      } else {
+        toast.error("Please fill all fields");
+      }
+    }else{
+      history.push('/Login')
     }
+    
   };
 
   return (
@@ -64,7 +62,7 @@ const ForgetPassword = ({ history }) => {
                   className="mt-5 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
                 >
                   <i className="fas fa-sign-in-alt  w-6  -ml-2" />
-                  <span className="ml-3">Submit</span>
+                  <span className="ml-3">{isFirst===true?'Submit':'Go login page'}</span>
                 </button>
               </form>
             </div>
